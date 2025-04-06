@@ -54,40 +54,19 @@ public class EventListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw(); // Works here
-
         System.out.println("I have received a message: " + message);
-
         if (playingRoulette) {
-            if (message.equals("let me see the chamber")) {
-                if (hasAdminPerms(event)) {
-                    displayGunChamber(event);
-                } else {
-                    event.getChannel().sendMessage("you have no perms nerd").queue();
-                }
-            }
-            if (message.equals("s")) {
-                rouletteSpin(event);
-            } else if (message.equals("f")) {
-                rouletteFire(event);
-            }
-            return;
+            playingRussianRoulette(event, message);
         }
+        //if a game is already playing, do nothing
+        tryAllRussianRoulettes(event, message);
 
+        //the mass pinging
         if (message.charAt(0) == '!') {
-            if (message.equals("!ping eliezer")) {
-                pingEliezer(event);
+            if (message.startsWith("!pinguser")) {
+                String ping = findGuyToPing(event, message);
+                massPingUser(event, ping);
             }
-        }
-
-        if (message.equals("!russian roulette")) {
-            //singleRussianRoulette(event);
-            defaultRouletteSettings(event);
-        } else if (message.equals("!russian roulette yashi")) {
-            rigTheGun5(event);
-        } else if (message.equals("!russian roulette crack")) {
-            defaultRouletteSettings(event);
-            //you get banned if you lose lol
-            ban = true;
         }
 
         if (message.contains("skibidi")) {
@@ -96,23 +75,21 @@ public class EventListener extends ListenerAdapter {
         }
     }
 
+
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         super.onSlashCommandInteraction(event);
     }
 
-    public void pingEliezer (MessageReceivedEvent event) {
+    public void massPingUser (MessageReceivedEvent event, String pinged) {
         if (!massiveRunning) {
             massiveRunning = true;
             int delayTimer = 50;
-            long eliezer = 976231813037056040L;
-            String eliezerID = "<@" + eliezer + ">";
             int totalTextChannels = event.getGuild().getTextChannels().size();
-
             for (int p = 0; p < 420; p++) {
                 for (int i = 3; i < totalTextChannels-1; i++) {
                     try {
-                        event.getGuild().getTextChannels().get(i).sendMessage(eliezerID).queue();
+                        event.getGuild().getTextChannels().get(i).sendMessage(pinged).queue();
                         Thread.sleep(delayTimer);
                     } catch (Exception e) {
                         System.out.println("I AM NOT HAPPY");
@@ -121,34 +98,16 @@ public class EventListener extends ListenerAdapter {
             }
             massiveRunning = false;
             event.getGuild().getTextChannels().get(2).sendMessage("finished!").queue();
+        } else {
+            event.getChannel().sendMessage("Sorry! This command is already running. Please wait until it finishes to use it again.").queue();
         }
     }
 
-//do not use this, it is sussy
-    public void singleRussianRoulette(MessageReceivedEvent event) {
-        boolean responded = false;
-        //int timesSurvived = 0;
-        playingRoulette = true;
-        gun[(int)(Math.random()*6)] = true;
-        while (!alive) {
-            responded = false;
-            event.getGuild().getTextChannels().get(mainChannelIndex).sendMessage("Would you like to [s]pin or [f]ire?").queue();
-            //scanner stuff here, implement
-            String choice = "";
-            if (choice.equalsIgnoreCase("f")) {
-               rouletteFire(event);
-            } else if (choice.equalsIgnoreCase("s")) {
-                rouletteSpin(event);
-            } else {
-                System.out.println("im too lazy to code this");
-            }
-        }
-    }
 
     public void rouletteFire(MessageReceivedEvent event) {
         if (gun[0]) {
             alive = false;
-            event.getChannel().sendMessage("Womp womp, you blasted your cabeza out :boom:. You survived for " + timesSurvived + " rounds :XDFUNNYBRO: .").queue();//XDFUNNYBRO is a temp fix
+            event.getChannel().sendMessage("Womp womp, you blasted your cabeza out :boom:. You survived for " + timesSurvived + " rounds <:XDFUNNYBRO:1322029721210589235> .").queue();//XDFUNNYBRO is a temp fix
             playingRoulette = false;
             if (ban) {
                 banForRoulette(event);
@@ -160,8 +119,6 @@ public class EventListener extends ListenerAdapter {
         }
     }
 
-
-
     public void rouletteSpin(MessageReceivedEvent event) {
         for (int i = 0; i < 6; i++) {
             int random = (int)(Math.random()*6);
@@ -172,7 +129,6 @@ public class EventListener extends ListenerAdapter {
         event.getChannel().sendMessage("You have spun the chamber. Would you like to [s]pin or [f]ire?").queue();
         //rouletteFire(event);
     }
-
 
     public void moveBullet(boolean[] a) {
         boolean temp = a[0];
@@ -226,6 +182,70 @@ public class EventListener extends ListenerAdapter {
             event.getChannel().sendMessage("Normally this guy would get banned but hes an admin so he cannot get bozoed out of this server.").queue();
         }
         ban = false;
+    }
+
+    public void tryAllRussianRoulettes(MessageReceivedEvent event, String message) {
+        if (message.equals("!russian roulette")) {
+            //singleRussianRoulette(event);
+            defaultRouletteSettings(event);
+        } else if (message.equals("!russian roulette yashi")) {
+            rigTheGun5(event);
+        } else if (message.equals("!russian roulette crack")) {
+            defaultRouletteSettings(event);
+            //you get banned if you lose lol
+            ban = true;
+        }
+    }
+
+    public void playingRussianRoulette(MessageReceivedEvent event, String message) {
+        if (message.equals("let me see the chamber")) {
+            if (hasAdminPerms(event)) {
+                displayGunChamber(event);
+            } else {
+                event.getChannel().sendMessage("you have no perms nerd").queue();
+            }
+        }
+        if (message.equals("s")) {
+            rouletteSpin(event);
+        } else if (message.equals("f")) {
+            rouletteFire(event);
+        }
+        return;
+    }
+
+    public String findGuyToPing(MessageReceivedEvent event, String message) {
+        // Extract the username to search for
+        String searchUsername = message.substring("!pinguser".length()).trim();
+
+        if (searchUsername.isEmpty()) {
+            event.getChannel().sendMessage("Please provide a username to search for.").queue();
+            return "n/a";
+        }
+
+        // Get all members in the server
+        List<Member> members = event.getGuild().getMembers();
+
+        // Search for the member
+        Member foundMember = null;
+        for (Member member : members) {
+            String username = member.getUser().getName();
+            String discriminator = member.getUser().getDiscriminator();
+            String fullUsername = username + "#" + discriminator;
+
+            // Check if username matches (case insensitive)
+            if (fullUsername.equalsIgnoreCase(searchUsername) ||
+                    username.equalsIgnoreCase(searchUsername)) {
+                foundMember = member;
+                break;
+            }
+        }
+
+        // Respond based on whether user was found
+        if (foundMember != null) {
+            return foundMember.getAsMention();
+        } else {
+            return "n/a";
+        }
     }
 
     public boolean hasAdminPerms(MessageReceivedEvent event) {
