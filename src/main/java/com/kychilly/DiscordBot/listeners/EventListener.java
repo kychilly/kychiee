@@ -82,6 +82,10 @@ public class EventListener extends ListenerAdapter {
     }
 
     public void massPingUser (MessageReceivedEvent event, String pinged) {
+        if (pinged.equals("n/a")) {
+            event.getChannel().sendMessage("Sorry, this user doesn't exist in this server!").queue();
+            return;
+        }
         if (!massiveRunning) {
             massiveRunning = true;
             int delayTimer = 50;
@@ -93,6 +97,8 @@ public class EventListener extends ListenerAdapter {
                         Thread.sleep(delayTimer);
                     } catch (Exception e) {
                         System.out.println("I AM NOT HAPPY");
+                        event.getChannel().sendMessage("Oops! Something happened. Stopping command, please fix kyche.").queue();
+                        break;
                     }
                 }
             }
