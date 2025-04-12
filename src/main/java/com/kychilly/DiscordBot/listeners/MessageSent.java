@@ -4,22 +4,16 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.unions.DefaultGuildChannelUnion;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
-import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
-public class EventListener extends ListenerAdapter {
+public class MessageSent extends ListenerAdapter {
 
     private boolean massiveRunning = false;
     private int mainChannelIndex = 2;
@@ -28,31 +22,14 @@ public class EventListener extends ListenerAdapter {
     private boolean alive = true;
     private int timesSurvived = 0;
     private boolean ban = false;
-
-
-    @Override
-    public void onGenericMessageReaction(@NotNull GenericMessageReactionEvent event) {
-        User user = event.getUser();
-        if (user == null) {
-            return;
-        }
-
-        Guild guild = event.getGuild();
-
-
-        String emoji = event.getReaction().getEmoji().getAsReactionCode();
-        String channelMention = event.getChannel().getAsMention();
-        String jumpLink = event.getJumpUrl();
-        String message = user.getAsMention() + " reacted to message with " + emoji + " in channel " + channelMention + "!";
-        DefaultGuildChannelUnion defaultchan = event.getGuild().getDefaultChannel();
-        defaultchan.asTextChannel().sendMessage(message).queue();
-
-
-    }
-
+    private boolean PLEASESTOP = false;
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
+            return;  // Ignore the message if it's from a bot
+        }
+
         String message = event.getMessage().getContentRaw(); // Works here
         System.out.println("I have received a message: " + message);
         if (playingRoulette) {
@@ -61,11 +38,30 @@ public class EventListener extends ListenerAdapter {
         //if a game is already playing, do nothing
         tryAllRussianRoulettes(event, message);
 
+
         //the mass pinging
         if (message.charAt(0) == '!') {
+            if (message.equalsIgnoreCase("!PLEASE STOP") && hasAdminPerms(event)) {
+                PLEASESTOP = true;
+            } else if (message.equalsIgnoreCase("!PLEASE GO") && hasAdminPerms(event)) {
+                PLEASESTOP = false;
+                event.getChannel().sendMessage("You may now use !pinguser.").queue();
+            }
+
             if (message.startsWith("!pinguser")) {
-                String ping = findGuyToPing(event, message);
-                massPingUser(event, ping);
+                if (!massiveRunning) {
+                    String ping = findGuyToPing(event, message);
+                    new Thread(() -> {
+                        massPingUser(event, ping);
+                    }).start();
+                } else {
+                    event.getChannel().sendMessage("Sorry! This command is already running. Please wait until it finishes to use it again.").queue();
+                }
+            } else if (message.startsWith("!pfp")) {
+                getUserPfp(event, message.substring(4));
+            } else if (message.startsWith("!ban")) {
+                //you know what comes here
+
             }
         }
 
@@ -76,25 +72,29 @@ public class EventListener extends ListenerAdapter {
     }
 
 
-    @Override
-    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        super.onSlashCommandInteraction(event);
-    }
+
+
+
 
     public void massPingUser (MessageReceivedEvent event, String pinged) {
         if (pinged.equals("n/a")) {
             event.getChannel().sendMessage("Sorry, this user doesn't exist in this server!").queue();
             return;
         }
-        if (!massiveRunning) {
             massiveRunning = true;
             int delayTimer = 50;
             int totalTextChannels = event.getGuild().getTextChannels().size();
             for (int p = 0; p < 420; p++) {
                 for (int i = 3; i < totalTextChannels-1; i++) {
                     try {
-                        event.getGuild().getTextChannels().get(i).sendMessage(pinged).queue();
-                        Thread.sleep(delayTimer);
+                        if (!PLEASESTOP) {
+                            event.getGuild().getTextChannels().get(i).sendMessage(pinged).queue();
+                            Thread.sleep(delayTimer);
+                        } else {
+                            event.getChannel().sendMessage("Stopping !pinguser command").queue();
+                            massiveRunning = false;
+                            return;
+                        }
                     } catch (Exception e) {
                         System.out.println("I AM NOT HAPPY");
                         event.getChannel().sendMessage("Oops! Something happened. Stopping command, please fix kyche.").queue();
@@ -103,12 +103,29 @@ public class EventListener extends ListenerAdapter {
                 }
             }
             massiveRunning = false;
-            event.getGuild().getTextChannels().get(2).sendMessage("finished!").queue();
+            event.getGuild().getTextChannels().get(mainChannelIndex).sendMessage("finished!").queue();
+    }
+
+    public void getUserPfp(MessageReceivedEvent event, String message) {
+        if (message.isEmpty()) {
+            String avatar = event.getAuthor().getAvatarUrl();
+            event.getChannel().sendMessage(avatar).queue();
         } else {
-            event.getChannel().sendMessage("Sorry! This command is already running. Please wait until it finishes to use it again.").queue();
+            findUserByUsername(event, message.substring(1), user -> {
+                String avatar = user.getEffectiveAvatarUrl();
+                event.getChannel().sendMessage(avatar).queue();
+            }, () -> {
+                event.getChannel().sendMessage("User `" + message + "` not found in this server.").queue();
+            });
         }
     }
 
+    //PLEASE REMEMBER TO CODE THIS
+    public void banUser(MessageReceivedEvent event, String guy) {
+        if (hasAdminPerms(event)) {
+
+        }
+    }
 
     public void rouletteFire(MessageReceivedEvent event) {
         if (gun[0]) {
@@ -230,7 +247,6 @@ public class EventListener extends ListenerAdapter {
 
         // Get all members in the server
         List<Member> members = event.getGuild().getMembers();
-
         // Search for the member
         Member foundMember = null;
         for (Member member : members) {
@@ -252,6 +268,29 @@ public class EventListener extends ListenerAdapter {
         } else {
             return "n/a";
         }
+    }
+
+    //sussy chatgpt User return method
+    public void findUserByUsername(MessageReceivedEvent event, String inputUsername, Consumer<User> onFound, Runnable onNotFound) {
+        Guild guild = event.getGuild();
+
+        // Fetch members matching the username or tag
+        guild.findMembers(member -> {
+            User user = member.getUser();
+            String username = user.getName(); // New-style username (no #1234)
+            String fullTag = user.getAsTag(); // Old-style tag (username#1234)
+
+            return username.equalsIgnoreCase(inputUsername) || fullTag.equalsIgnoreCase(inputUsername);
+        }).onSuccess(members -> {
+            if (!members.isEmpty()) {
+                User matchedUser = members.get(0).getUser();
+                onFound.accept(matchedUser); // Pass the found user to the callback
+            } else {
+                onNotFound.run(); // Trigger the not-found callback
+            }
+        }).onError(error -> {
+            onNotFound.run();
+        });
     }
 
     public boolean hasAdminPerms(MessageReceivedEvent event) {
