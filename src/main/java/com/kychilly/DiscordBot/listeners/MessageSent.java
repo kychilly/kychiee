@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -23,6 +24,8 @@ public class MessageSent extends ListenerAdapter {
     private int timesSurvived = 0;
     private boolean ban = false;
     private boolean PLEASESTOP = false;
+    private Member memberPlayingRoulette;
+    //private ArrayList<String> roulettePlayers = new ArrayList<String>();
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -32,8 +35,12 @@ public class MessageSent extends ListenerAdapter {
 
         String message = event.getMessage().getContentRaw(); // Works here
         System.out.println("I have received a message: " + message);
-        if (playingRoulette) {
+        if (playingRoulette && memberPlayingRoulette.equals(event.getMember())) {
             playingRussianRoulette(event, message);
+        } else {
+            if (message.equals("s") || message.equals("f")) {
+                event.getChannel().sendMessage("Sorry, " + memberPlayingRoulette.getNickname() + " is currently playing russian roulette. Please wait your turn.").queue();
+            }
         }
         //if a game is already playing, do nothing
         tryAllRussianRoulettes(event, message);
@@ -130,15 +137,16 @@ public class MessageSent extends ListenerAdapter {
     public void rouletteFire(MessageReceivedEvent event) {
         if (gun[0]) {
             alive = false;
-            event.getChannel().sendMessage("Womp womp, you blasted your cabeza out :boom:. You survived for " + timesSurvived + " rounds <:XDFUNNYBRO:1322029721210589235> .").queue();//XDFUNNYBRO is a temp fix
+            event.getChannel().sendMessage(memberPlayingRoulette.getAsMention() + "Womp womp, you blasted your cabeza out :boom:. You survived for " + timesSurvived + " rounds <:XDFUNNYBRO:1322029721210589235> .").queue();//XDFUNNYBRO is a temp fix
             playingRoulette = false;
+            memberPlayingRoulette = null;
             if (ban) {
                 banForRoulette(event);
             }
         } else {
             moveBullet(gun);
             timesSurvived++;
-            event.getChannel().sendMessage("Woah, you live to see another day :face_exhaling:. You have lived for " + timesSurvived + " times. " + "Would you like to [s]pin or [f]ire?").queue();
+            event.getChannel().sendMessage(memberPlayingRoulette.getAsMention() + "Woah, you live to see another day :face_exhaling:. You have lived for " + timesSurvived + " times. " + "Would you like to [s]pin or [f]ire?").queue();
         }
     }
 
@@ -149,7 +157,7 @@ public class MessageSent extends ListenerAdapter {
             gun[i] = gun[random];
             gun[random] = temp;
         }
-        event.getChannel().sendMessage("You have spun the chamber. Would you like to [s]pin or [f]ire?").queue();
+        event.getChannel().sendMessage(memberPlayingRoulette.getAsMention() + "You have spun the chamber. Would you like to [s]pin or [f]ire?").queue();
         //rouletteFire(event);
     }
 
@@ -170,13 +178,14 @@ public class MessageSent extends ListenerAdapter {
     }
 
     public void defaultRouletteSettings(MessageReceivedEvent event) {
+        memberPlayingRoulette = event.getMember();
         timesSurvived = 0;
         playingRoulette = true;
         for (int i = 0; i < 6; i++) {
             gun[i] = false;
         }
         gun[(int)(Math.random()*6)] = true;
-        event.getChannel().sendMessage("Would you like to [s]pin or [f]ire?").queue();
+        event.getChannel().sendMessage(memberPlayingRoulette.getAsMention() + "Would you like to [s]pin or [f]ire?").queue();
     }
 
     public void rigTheGun5(MessageReceivedEvent event) {
