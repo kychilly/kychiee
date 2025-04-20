@@ -1,9 +1,7 @@
 package com.kychilly.DiscordBot;
 
-import com.kychilly.DiscordBot.listeners.MessageSent;
-import com.kychilly.DiscordBot.listeners.MemberJoin;
-import com.kychilly.DiscordBot.listeners.ReactWithReaction;
-import com.kychilly.DiscordBot.listeners.SlashCommands;
+import com.kychilly.DiscordBot.commands.CommandManager;
+import com.kychilly.DiscordBot.listeners.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -38,8 +36,11 @@ public class KychillyBot {
         //register listener
         shardManager.addEventListener(new MessageSent());
         shardManager.addEventListener(new MemberJoin());
-        shardManager.addEventListener(new ReactWithReaction());
+        //shardManager.addEventListener(new ReactWithReaction());
+
         shardManager.addEventListener(new SlashCommands());
+        shardManager.addEventListener(new CommandManager());
+        shardManager.addEventListener(new Typeracer());
     }
 
     public ShardManager getShardManager() {
@@ -56,5 +57,6 @@ public class KychillyBot {
         } catch (Exception e) {
             System.out.println("Provided bot token is incorrect");
         }
+
     }
 }

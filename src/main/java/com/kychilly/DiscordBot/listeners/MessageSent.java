@@ -73,7 +73,6 @@ public class MessageSent extends ListenerAdapter {
         }
 
         if (message.contains("skibidi")) {
-            System.out.println("working");
             event.getChannel().sendMessage("dop dop dop yes yes").queue();
         }
     }
@@ -137,7 +136,7 @@ public class MessageSent extends ListenerAdapter {
     public void rouletteFire(MessageReceivedEvent event) {
         if (gun[0]) {
             alive = false;
-            event.getChannel().sendMessage(memberPlayingRoulette.getAsMention() + "Womp womp, you blasted your cabeza out :boom:. You survived for " + timesSurvived + " rounds <:XDFUNNYBRO:1322029721210589235> .").queue();//XDFUNNYBRO is a temp fix
+            event.getChannel().sendMessage(memberPlayingRoulette.getAsMention() + "BOOM HEADSHOT :boom:. You survived for " + timesSurvived + " rounds <:XDFUNNYBRO:1322029721210589235> .").queue();
             playingRoulette = false;
             memberPlayingRoulette = null;
             if (ban) {
