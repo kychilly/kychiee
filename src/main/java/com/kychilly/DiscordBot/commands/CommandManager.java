@@ -51,6 +51,12 @@ public class CommandManager extends ListenerAdapter {
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
 
+
+
+
+
+
+
     //if want to have these commands on other guilds, do onGuildJoin, copy paste everything from onGuildReady here
 
 }
