@@ -34,7 +34,7 @@ public class KychillyBot {
         shardManager = builder.build();
 
         //register listener
-        shardManager.addEventListener(new MessageSent());
+        shardManager.addEventListener(new PingCommandsAndRoulette());
         shardManager.addEventListener(new MemberJoin());
         //shardManager.addEventListener(new ReactWithReaction());
 
