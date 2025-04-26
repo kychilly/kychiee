@@ -42,6 +42,7 @@ public class KychillyBot {
         shardManager.addEventListener(new CommandManager());
         shardManager.addEventListener(new Typeracer());
         shardManager.addEventListener(new ReminderCommand());
+        shardManager.addEventListener(new TimerCommand());
     }
 
     public ShardManager getShardManager() {

@@ -57,15 +57,23 @@ public class MessageSent extends ListenerAdapter {
                 event.getChannel().sendMessage("You may now use !pinguser.").queue();
             }
 
+            if (message.startsWith("!ghostping")) {
+                    String ping = findGuyToPing(event, message);//how does this get n/a???
+                    ghostPingUser(event, ping);
+            }
+
             if (message.startsWith("!pinguser")) {
+
                 if (!massiveRunning) {
                     String ping = findGuyToPing(event, message);
+                    System.out.println(ping);
                     new Thread(() -> {
                         massPingUser(event, ping);
                     }).start();
                 } else {
                     event.getChannel().sendMessage("Sorry! This command is already running. Please wait until it finishes to use it again.").queue();
                 }
+
             } else if (message.startsWith("!pfp")) {
                 getUserPfp(event, message.substring(4));
             } else if (message.startsWith("!ban")) {
@@ -78,49 +86,8 @@ public class MessageSent extends ListenerAdapter {
             event.getChannel().sendMessage("dop dop dop yes yes").queue();
         }
 
-        if (message.startsWith("!TIMER")) {
-            timerStuff(event);
-        }
-
-    }
 
 
-
-    public void timerStuff(MessageReceivedEvent event) {
-        String[] args = event.getMessage().getContentRaw().split(" ");
-
-        if (args.length < 2) {
-            event.getChannel().sendMessage("❌ Please specify the number of seconds.").queue();
-            return;
-        }
-
-        int seconds;
-        try {
-            seconds = Integer.parseInt(args[1]);
-            if (seconds <= 0) {
-                event.getChannel().sendMessage("❌ Time must be greater than 0.").queue();
-                return;
-            }
-        } catch (NumberFormatException e) {
-            event.getChannel().sendMessage("❌ Invalid number.").queue();
-            return;
-        }
-
-        event.getChannel().sendMessage("⏳ Timer: " + seconds + "s").queue(timerMessage -> {
-            final int[] timeLeft = {seconds};
-
-            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
-            scheduler.scheduleAtFixedRate(() -> {
-                if (timeLeft[0] <= 0) {
-                    scheduler.shutdown();
-                    timerMessage.reply(event.getAuthor().getAsMention() + " YOUR TIME HAS COME TO AN END :index_pointing_at_the_viewer::robot:").queue();
-                } else {
-                    timerMessage.editMessage("⏳ Timer: " + timeLeft[0] + "s").queue();
-                    timeLeft[0]--;
-                }
-            }, 0, 1, TimeUnit.SECONDS);
-        });
     }
 
 
@@ -154,6 +121,29 @@ public class MessageSent extends ListenerAdapter {
             }
             massiveRunning = false;
             event.getGuild().getTextChannels().get(mainChannelIndex).sendMessage("finished!").queue();
+    }
+
+    public void ghostPingUser(MessageReceivedEvent event, String theUserMention) {
+        if (theUserMention.equals("n/a")) {
+            event.getChannel().sendMessage("Sorry, this user doesn't exist in this server!").queue();
+            return;
+        }
+        try {
+            event.getMessage().delete().queue();
+            for (int i = 0; i < 5; i++) {
+                event.getChannel().sendMessage(theUserMention).queue(message -> {
+                    // Schedule deletion after 5 seconds
+                    message.delete().queueAfter(5, TimeUnit.SECONDS,
+                            success -> {
+                            },
+                            error -> System.out.println("Couldn't delete message: " + error.getMessage())
+                    );
+                });
+            }
+                Thread.sleep(5000);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     public void getUserPfp(MessageReceivedEvent event, String message) {
@@ -288,38 +278,29 @@ public class MessageSent extends ListenerAdapter {
         return;
     }
 
+    //RETURNS THE MENTION
     public String findGuyToPing(MessageReceivedEvent event, String message) {
-        // Extract the username to search for
-        String searchUsername = message.substring("!pinguser".length()).trim();
+        String searchUsername = message.split("\\s+")[1];
 
         if (searchUsername.isEmpty()) {
             event.getChannel().sendMessage("Please provide a username to search for.").queue();
             return "n/a";
         }
 
-        // Get all members in the server
-        List<Member> members = event.getGuild().getMembers();
-        // Search for the member
-        Member foundMember = null;
-        for (Member member : members) {
-            String username = member.getUser().getName();
-            String discriminator = member.getUser().getDiscriminator();
-            String fullUsername = username + "#" + discriminator;
+        // Clean input
+        searchUsername = searchUsername.replace("@", "").trim().toLowerCase();
 
-            // Check if username matches (case insensitive)
-            if (fullUsername.equalsIgnoreCase(searchUsername) ||
-                    username.equalsIgnoreCase(searchUsername)) {
-                foundMember = member;
-                break;
+        for (Member member : event.getGuild().getMembers()) {
+            String username = member.getUser().getName().toLowerCase();
+            String nickname = member.getNickname();
+
+            if (username.equals(searchUsername) ||
+                    (nickname != null && nickname.toLowerCase().equals(searchUsername))) {
+                return member.getAsMention();
             }
         }
 
-        // Respond based on whether user was found
-        if (foundMember != null) {
-            return foundMember.getAsMention();
-        } else {
-            return "n/a";
-        }
+        return "n/a";
     }
 
     //sussy chatgpt User return method

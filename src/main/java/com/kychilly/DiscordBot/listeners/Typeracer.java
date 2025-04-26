@@ -26,6 +26,7 @@ public class Typeracer extends ListenerAdapter {
 
     private final Map<Long, String> activeRace = new HashMap<>();
     private final Map<Long, Long> raceStartTime = new HashMap<>();
+    ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
@@ -55,13 +56,25 @@ public class Typeracer extends ListenerAdapter {
             System.out.println("this is real string: " + theRaceText);
             String raceText = toCyrillicHomoglyphs(theRaceText);
             activeRace.put(channelId, raceText);
-            raceStartTime.put(channelId, System.currentTimeMillis());
-
+            raceStartTime.put(channelId, System.currentTimeMillis()+5000);
+            try {
+                event.getChannel().sendMessage("Typeracer starting in 5 seconds! Get ready!")
+                        .queue(message -> {
+                            // Schedule deletion after 5 seconds
+                            message.delete().queueAfter(5, TimeUnit.SECONDS,
+                                    success -> {},
+                                    error -> System.out.println("Couldn't delete message: " + error.getMessage())
+                            );
+                        });
+                Thread.sleep(5000);
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
             event.getChannel().sendMessage("🏁 **Typerace Starting!** Type the following 20 words exactly:\n\n" +
                     "```" + raceText + "```").queue();
 
             // Timeout after 60 seconds
-            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
             scheduler.schedule(() -> {
                 if (activeRace.containsKey(channelId)) {
                     activeRace.remove(channelId);
@@ -92,6 +105,7 @@ public class Typeracer extends ListenerAdapter {
                 event.getChannel().sendMessage("🏆 " + event.getAuthor().getAsMention() + " wins! 🎉\n" +
                         "⏱ Time: " + (timeTakenMs / 1000.0) + " seconds\n" +
                         "⌨️ WPM: " + wpm).queue();
+                scheduler.shutdown();
             }
         }
     }
