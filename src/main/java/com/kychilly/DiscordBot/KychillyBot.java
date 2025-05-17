@@ -1,6 +1,7 @@
 package com.kychilly.DiscordBot;
 
 import com.kychilly.DiscordBot.commands.CommandManager;
+//import com.kychilly.DiscordBot.commands.ReminderCommand;
 import com.kychilly.DiscordBot.listeners.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -33,11 +34,9 @@ public class KychillyBot {
 
         shardManager = builder.build();
 
-        //register listener
+        //register listeners
         shardManager.addEventListener(new PingCommandsAndRoulette());
         shardManager.addEventListener(new MemberJoin());
-        //shardManager.addEventListener(new ReactWithReaction());
-
         shardManager.addEventListener(new SlashCommands());
         shardManager.addEventListener(new CommandManager());
         shardManager.addEventListener(new Typeracer());

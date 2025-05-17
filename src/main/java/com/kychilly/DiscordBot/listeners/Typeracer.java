@@ -76,6 +76,9 @@ public class Typeracer extends ListenerAdapter {
             // Timeout after 60 seconds
 
             scheduler.schedule(() -> {
+                if (!activeRace.containsKey(channelId)) {
+                    scheduler.shutdown();
+                }
                 if (activeRace.containsKey(channelId)) {
                     activeRace.remove(channelId);
                     raceStartTime.remove(channelId);
