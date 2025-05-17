@@ -35,13 +35,14 @@ public class KychillyBot {
         shardManager = builder.build();
 
         //register listeners
-        shardManager.addEventListener(new PingCommandsAndRoulette());
+        shardManager.addEventListener(new PingCommands());
         shardManager.addEventListener(new MemberJoin());
         shardManager.addEventListener(new SlashCommands());
         shardManager.addEventListener(new CommandManager());
         shardManager.addEventListener(new Typeracer());
         shardManager.addEventListener(new ReminderCommand());
         shardManager.addEventListener(new TimerCommand());
+        //shardManager.addEventListener(new RussianRouletteListener());
     }
 
     public ShardManager getShardManager() {
