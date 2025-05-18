@@ -39,16 +39,16 @@ public class PingCommands extends ListenerAdapter {
                 ghostPingUser(event, ping);
             }
 
-            if (message.startsWith("!pinguser")) {
-                if (!massiveRunning) {
-                    String ping = findGuyToPing(event, message);
-                    System.out.println(ping);
-                    new Thread(() -> {
-                        massPingUser(event, ping);
-                    }).start();
-                } else {
-                    event.getChannel().sendMessage("Sorry! This command is already running. Please wait until it finishes to use it again.").queue();
-                }
+            if (message.startsWith("!pinguser")) {//do not use this command for legal purposes
+//                if (!massiveRunning) {
+//                    String ping = findGuyToPing(event, message);
+//                    System.out.println(ping);
+//                    new Thread(() -> {
+//                        massPingUser(event, ping);
+//                    }).start();
+//                } else {
+//                    event.getChannel().sendMessage("Sorry! This command is already running. Please wait until it finishes to use it again.").queue();
+//                }
             } else if (message.startsWith("!pfp")) {
                 getUserPfp(event, message.substring(4));
             } else if (message.startsWith("!ban")) {

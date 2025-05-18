@@ -38,6 +38,8 @@ public class CommandManager extends ListenerAdapter {
             event.reply("<:peashooter:1363400493967343757>").queue();
         } else if (command.equals("remind")) {
             HandleReminderCommand.execute(event);
+        } else if (command.equals("ban")) {
+            BanCommand.execute(event);
         }
     }
 
@@ -49,6 +51,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("emily", ":emily:"));
         commandData.add(Commands.slash("peashooter", "peashooter image"));
         commandData.add(HandleReminderCommand.getCommandData());
+        commandData.add(BanCommand.getCommandData());
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
 
