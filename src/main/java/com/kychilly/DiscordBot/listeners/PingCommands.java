@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.awt.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -24,7 +25,6 @@ public class PingCommands extends ListenerAdapter {
         }
 
         String message = event.getMessage().getContentRaw();
-        System.out.println("I have received a message: " + message);
 
         //the mass pinging
         if (message.charAt(0) == '!') {
