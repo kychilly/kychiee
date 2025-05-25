@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -53,6 +54,28 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(BanCommand.getCommandData());
         commandData.add(Commands.slash("pfp", "Get a user's profile picture")
                 .addOptions(PfpCommand.getOptions()));
+
+        commandData.add(Commands.slash("wordbomb", "Play WordBomb on Discord!")
+                .addOptions(
+                        (new OptionData(OptionType.INTEGER, "difficulty", "Difficulty of the letter sequences given")
+                                .addChoice("Easy", 1)
+                                .addChoice("Medium", 2)
+                                .addChoice("Hard", 3)
+                                .setRequired(true)
+                        ),
+                        (new OptionData(OptionType.INTEGER, "language", "Language to play WordBomb in (default: English)")
+                                .addChoice("English", 0)
+                                .addChoice("Español", 1)
+                                .setRequired(false)
+                        ),
+                        (new OptionData(OptionType.BOOLEAN, "practice", "Select \"True\" to play in practice mode (currently unsupported)")
+                                .setRequired(false)
+                        )
+                )
+        );
+
+
+
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
 
