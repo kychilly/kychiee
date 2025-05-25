@@ -1,5 +1,6 @@
 package com.kychilly.DiscordBot.listeners;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -51,8 +52,6 @@ public class PingCommands extends ListenerAdapter {
 //                }
             } else if (message.startsWith("!pfp")) {
                 getUserPfp(event, message.substring(4));
-            } else if (message.startsWith("!ban")) {
-                //you know what comes here
             }
         }
 

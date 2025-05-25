@@ -32,14 +32,14 @@ public class CommandManager extends ListenerAdapter {
             event.reply(response).setEphemeral(true).queue();
         } else if (command.equals("typeracer")) {
             //do typeracer lol
-        } else if (command.equals("emily")) {
-            event.reply("<:emily:1327147566311407679>").queue();
         } else if (command.equals("peashooter")) {
             event.reply("<:peashooter:1363400493967343757>").queue();
         } else if (command.equals("remind")) {
             HandleReminderCommand.execute(event);
         } else if (command.equals("ban")) {
             BanCommand.execute(event);
+        } else if (command.equals("pfp")) {
+            event.replyEmbeds(PfpCommand.execute(event).build()).queue();
         }
     }
 
@@ -48,10 +48,11 @@ public class CommandManager extends ListenerAdapter {
         List<CommandData> commandData = new ArrayList<>();
         commandData.add(Commands.slash("welcome", "welcomes user"));
         commandData.add(Commands.slash("roles", "gets all roles on discord server"));
-        commandData.add(Commands.slash("emily", ":emily:"));
         commandData.add(Commands.slash("peashooter", "peashooter image"));
         commandData.add(HandleReminderCommand.getCommandData());
         commandData.add(BanCommand.getCommandData());
+        commandData.add(Commands.slash("pfp", "Get a user's profile picture")
+                .addOptions(PfpCommand.getOptions()));
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
 
