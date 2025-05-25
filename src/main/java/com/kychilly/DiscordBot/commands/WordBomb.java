@@ -13,10 +13,12 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.FileUpload;
 
+import java.io.*;
+import java.nio.file.*;
+import java.util.ArrayList;
+
 import java.awt.*;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.List;
@@ -73,10 +75,13 @@ public class WordBomb implements Command {
     public ArrayList<String> decodeJSON(String filePath) {
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>() {}.getType();
+        String s = "com/github/KychillyBot/wordbomb/" + filePath + ".json";
+        System.out.println(s);
         try (InputStreamReader reader = new InputStreamReader(
-                Objects.requireNonNull(WordBomb.class.getClassLoader().getResourceAsStream("com/github/Ramble21/wordbomb/" + filePath + ".json")))) {
+                Objects.requireNonNull(WordBomb.class.getClassLoader().getResourceAsStream("com/github/KychillyBot/wordbomb/" + filePath + ".json")))) {
             return gson.fromJson(reader, listType);
         } catch (Exception ignored) {
+
             System.out.println("Error decoding JSON at " + filePath);
         }
         throw new RuntimeException(filePath + " invalid path");
@@ -97,6 +102,7 @@ public class WordBomb implements Command {
         channel = event.getChannel();
         dictionary = (LANGUAGE_CODE == 0) ? new HashSet<>(decodeJSON("dictionary_en")) : new HashSet<>(decodeJSON("dictionary_es"));
         prompts = (DIFFICULTY_CODE == 1) ? decodeJSON("easy") : (DIFFICULTY_CODE == 2) ? decodeJSON("medium") : decodeJSON("hard");
+
         activeChannelIDs.add(channel.getId());
 
         if (PRACTICE_MODE) {
@@ -111,7 +117,7 @@ public class WordBomb implements Command {
         event.deferReply().queue(hook -> {
             assert img != null;
             hook.sendMessageEmbeds(eb.build())
-                    .addFiles(FileUpload.fromData(img,"wordbomb.png"))
+                    //.addFiles(FileUpload.fromData(img,"wordbomb.png"))
                     .addActionRow(
                             Button.success("start", "Start Game"),
                             Button.primary("join", "Join Game"),
@@ -216,6 +222,8 @@ public class WordBomb implements Command {
         channel.getJDA().addEventListener(listener);
         timer.schedule(removeLife, TURN_TIME * 1000);
     }
+
+
 }
 
  /*
