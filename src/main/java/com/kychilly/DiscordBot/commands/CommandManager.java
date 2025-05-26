@@ -48,6 +48,8 @@ public class CommandManager extends ListenerAdapter {
             } catch (IOException e) {
                 event.reply("An error occurred while starting WordBomb: " + e.getMessage()).setEphemeral(true).queue();
             }
+        } else if (command.equals("help")) {
+            event.reply("DM user \"<@840216337119969301>\" for temporary assitance. Additionally, you can join the support server for more help: https://discord.gg/WsnJEutfbd").setEphemeral(true).queue();
         }
     }
 
@@ -57,6 +59,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("welcome", "welcomes user"));
         commandData.add(Commands.slash("roles", "gets all roles on discord server"));
         commandData.add(Commands.slash("peashooter", "peashooter image"));
+        commandData.add(Commands.slash("help", "Gives additional help"));
         commandData.add(HandleReminderCommand.getCommandData());
         commandData.add(BanCommand.getCommandData());
         commandData.add(Commands.slash("pfp", "Get a user's profile picture")

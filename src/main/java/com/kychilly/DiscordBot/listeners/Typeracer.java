@@ -35,10 +35,6 @@ public class Typeracer extends ListenerAdapter {
         String content = event.getMessage().getContentRaw();
         long channelId = event.getChannel().getIdLong();
 
-        if (content.equals("!emily")) {
-            event.getChannel().sendMessage("<:emily:1327147566311407679>").queue();
-        }
-
         if (content.equalsIgnoreCase("!typerace")) {
             if (activeRace.containsKey(channelId)) {
                 event.getChannel().sendMessage("A race is already in progress!").queue();

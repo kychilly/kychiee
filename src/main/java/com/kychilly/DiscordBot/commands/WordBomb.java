@@ -157,21 +157,12 @@ public class WordBomb implements Command {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.green);
         eb.setTitle(players.get(0).user.getEffectiveName() + ", you are the winner! :tada:");
-        eb.setDescription("Congratulations " + players.get(0).user.getAsMention() + ", you earned " + getNumPoints() + " points.");
+        eb.setDescription("Congratulations " + players.get(0).user.getAsMention() + ", sharkie is so proud of you!!!");
         eb.setImage(players.get(0).user.getEffectiveAvatarUrl());
         channel.sendMessageEmbeds(eb.build()).queue();
         activeChannelIDs.remove(channel.getId());
     }
-    public int getNumPoints() {
-        Random random = new Random();
-        double mean = 100;
-        double stdDeviation = 30;
-        double gaussian = random.nextGaussian();
-        double value = mean + stdDeviation * gaussian;
-        double mult = (double) DIFFICULTY_CODE / 1.5;
-        value = Math.max(0, Math.min(200, value));
-        return (int) Math.round(value * mult);
-    }
+
     public void passTurn() {
         if (players.size() == 1) {
             endGame();
