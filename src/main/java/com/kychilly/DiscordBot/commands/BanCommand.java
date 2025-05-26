@@ -17,7 +17,7 @@ public class BanCommand {
     public static CommandData getCommandData() {
         return Commands.slash("ban", "Ban a user")
                 .addOption(OptionType.USER, "user", "The user to ban", true)
-                .addOption(OptionType.STRING, "reason", "The reason to ban", true);
+                .addOption(OptionType.STRING, "reason", "The reason to ban", false);
     }
 
     public static void execute(SlashCommandInteractionEvent event) {

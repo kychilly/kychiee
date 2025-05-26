@@ -66,7 +66,7 @@ public class WordBomb implements Command {
     public EmbedBuilder getEmbed() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("WordBomb");
-        eb.setThumbnail("attachment://wordbomb.png");
+        eb.setThumbnail("https://static.wikia.nocookie.net/roblox/images/4/40/Wordbomb-icon.webp/revision/latest?cb=20240720022629");
         eb.setDescription(defaultDescription + playerList());
         eb.setFooter(host.getEffectiveName(), host.getAvatarUrl());
         //eb.setColor(KychillyBot.killbotEnjoyer);
@@ -75,8 +75,7 @@ public class WordBomb implements Command {
     public ArrayList<String> decodeJSON(String filePath) {
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>() {}.getType();
-        String s = "com/github/KychillyBot/wordbomb/" + filePath + ".json";
-        System.out.println(s);
+
         try (InputStreamReader reader = new InputStreamReader(
                 Objects.requireNonNull(WordBomb.class.getClassLoader().getResourceAsStream("com/github/KychillyBot/wordbomb/" + filePath + ".json")))) {
             return gson.fromJson(reader, listType);

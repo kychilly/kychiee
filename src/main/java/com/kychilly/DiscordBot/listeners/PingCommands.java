@@ -58,6 +58,7 @@ public class PingCommands extends ListenerAdapter {
         if (message.contains("skibidi")) {
             event.getChannel().sendMessage("dop dop dop yes yes").queue();
         }
+
     }
 
     public void massPingUser(MessageReceivedEvent event, String pinged) {

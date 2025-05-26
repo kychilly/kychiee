@@ -98,6 +98,7 @@ public class WordBombButtonListener extends ListenerAdapter {
                 eb.setTitle("Word Bomb for RambleBot was adapted from https://jklm.fun/ \"BombParty\"");
                 eb.setDescription(helpDescription);
                 //eb.setColor(RambleBot.killbotEnjoyer);
+                eb.setFooter("sigma sigma on the wall");
                 buttonEvent.replyEmbeds(eb.build()).setEphemeral(true).queue();
                 break;
 
