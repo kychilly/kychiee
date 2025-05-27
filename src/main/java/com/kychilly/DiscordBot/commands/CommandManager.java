@@ -40,6 +40,8 @@ public class CommandManager extends ListenerAdapter {
             HandleReminderCommand.execute(event);
         } else if (command.equals("ban")) {
             BanCommand.execute(event);
+        } else if (command.equals("kick")) {
+            KickCommand.execute(event);
         } else if (command.equals("pfp")) {
             event.replyEmbeds(PfpCommand.execute(event).build()).queue();
         } else if (command.equals("wordbomb")) {
@@ -62,6 +64,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("help", "Gives additional help"));
         commandData.add(HandleReminderCommand.getCommandData());
         commandData.add(BanCommand.getCommandData());
+        commandData.add(KickCommand.getCommandData());
         commandData.add(Commands.slash("pfp", "Get a user's profile picture")
                 .addOptions(PfpCommand.getOptions()));
 
