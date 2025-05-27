@@ -95,7 +95,7 @@ public class WordBombButtonListener extends ListenerAdapter {
 
             case "help":
                 EmbedBuilder eb = new EmbedBuilder();
-                eb.setTitle("Word Bomb for RambleBot was adapted from https://jklm.fun/ \"BombParty\"");
+                eb.setTitle("Word Bomb for Woodland Mansion was adapted from https://jklm.fun/ \"BombParty\"");
                 eb.setDescription(helpDescription);
                 //eb.setColor(RambleBot.killbotEnjoyer);
                 eb.setFooter("sigma sigma on the wall");

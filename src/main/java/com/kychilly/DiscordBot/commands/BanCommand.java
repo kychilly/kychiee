@@ -40,9 +40,27 @@ public class BanCommand {
             return;
         }
 
-        // Check if target is bannable
+        // Check if target is the command executor
+        if (target.getIdLong() == event.getMember().getIdLong()) {
+            event.reply("You cannot ban yourself!").setEphemeral(true).queue();
+            return;
+        }
+
+        // Check if target is the server owner
+        if (target.isOwner()) {
+            event.reply("You cannot ban the server owner!").setEphemeral(true).queue();
+            return;
+        }
+
+        // Check if bot can interact with target
         if (!event.getGuild().getSelfMember().canInteract(target)) {
             event.reply("I cannot ban that user because they have a higher role than me!").setEphemeral(true).queue();
+            return;
+        }
+
+        // Check if executor can interact with target (role hierarchy check)
+        if (!event.getMember().canInteract(target)) {
+            event.reply("You cannot ban that user because they have a higher or equal role to you!").setEphemeral(true).queue();
             return;
         }
 
