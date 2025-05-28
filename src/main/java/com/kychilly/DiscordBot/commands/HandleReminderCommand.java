@@ -24,17 +24,24 @@ public class HandleReminderCommand {
         String timeInput = event.getOption("time").getAsString();
         String reminderMessage = event.getOption("message").getAsString();
 
+        User reminderUser = event.getUser();
+
         int delaySeconds = parseTimeToSeconds(timeInput);
         if (delaySeconds <= 0) {
             event.reply("❌ Invalid time format. Use something like `10s`, `5m`, or `1h`.").setEphemeral(true).queue();
             return;
         }
 
-        event.reply("⏰ Reminder set for " + user.getName() + " in " + timeInput + ".").queue();
+        event.reply("⏰ Reminder set for " + user.getName() + " in " + timeInput + ": " + reminderMessage).queue();
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.schedule(() -> {
-            event.getChannel().sendMessage(user.getAsMention() + " 🔔 Reminder: " + reminderMessage).queue();
+            event.getChannel().sendMessage(user.getAsMention() + " 🔔 Reminder: " + reminderMessage).queue(reminderMsg -> {
+                // Send an ephemeral follow-up (does NOT reply visually, but confirms)
+                event.getHook().sendMessage("Reminder sent by " + reminderUser.getAsMention())
+                        .setEphemeral(true)
+                        .queue();
+            });
             scheduler.shutdown();
         }, delaySeconds, TimeUnit.SECONDS);
     }
