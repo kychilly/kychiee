@@ -1,13 +1,17 @@
 package com.kychilly.DiscordBot.listeners;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.kychilly.DiscordBot.commands.WordBomb;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,13 +20,11 @@ public class Typeracer extends ListenerAdapter {
 
     private String theRaceText = "";
 
-    private final List<String> wordList = List.of(
-            "fast", "keyboard", "java", "discord", "race", "bot", "type", "challenge",
-            "speed", "winner", "computer", "game", "code", "chat", "message", "channel",
-            "quick", "random", "fun", "text", "contest", "start", "finish", "timer"
-    );
+    private final List<String> wordList;
 
-
+    public Typeracer() {
+        this.wordList = readTextFile("com/github/KychillyBot/wordbomb/dictionary.txt");
+    }
 
     private final Map<Long, String> activeRace = new HashMap<>();
     private final Map<Long, Long> raceStartTime = new HashMap<>();
@@ -147,6 +149,31 @@ public class Typeracer extends ListenerAdapter {
             }
         }
         return false;
+    }
+
+    private List<String> readTextFile(String filePath) {
+        List<String> wordList = new ArrayList<>();
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
+             InputStreamReader reader = new InputStreamReader(inputStream);
+             BufferedReader bufferedReader = new BufferedReader(reader)) {
+
+            if (inputStream == null) {
+                throw new RuntimeException("File not found: " + filePath);
+            }
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                line = line.trim();
+                if (!line.isEmpty()) {
+                    wordList.add(line.toLowerCase());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error reading text file at " + filePath + ": " + e.getMessage());
+            throw new RuntimeException("Failed to load word list from " + filePath, e);
+        }
+        return wordList;
     }
 
 }
