@@ -44,6 +44,11 @@ public class CommandManager extends ListenerAdapter {
             KickCommand.execute(event);
         } else if (command.equals("pfp")) {
             event.replyEmbeds(PfpCommand.execute(event).build()).queue();
+        } else if (command.equals("wordle")) {
+            WordleCommand wordleCommand = new WordleCommand();
+            wordleCommand.handleCommand(event);
+        } else if (command.equals("guess")) {
+            WordleCommand.handleGuess(event);
         } else if (command.equals("wordbomb")) {
             try {
                 new WordBomb().execute(event); // instantiate and run
@@ -65,6 +70,9 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(HandleReminderCommand.getCommandData());
         commandData.add(BanCommand.getCommandData());
         commandData.add(KickCommand.getCommandData());
+
+
+
         commandData.add(Commands.slash("pfp", "Get a user's profile picture")
                 .addOptions(PfpCommand.getOptions()));
 
@@ -87,7 +95,9 @@ public class CommandManager extends ListenerAdapter {
                 )
         );
 
-
+        commandData.add(WordleCommand.getCommandData());
+        commandData.add(Commands.slash("guess", "Make a guess in your Wordle game")
+                .addOption(OptionType.STRING, "word", "Your 5-letter guess", true));
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
