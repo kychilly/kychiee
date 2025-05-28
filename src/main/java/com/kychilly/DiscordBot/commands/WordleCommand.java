@@ -106,7 +106,9 @@ public class WordleCommand {
         if (game.isWon() || game.isGameOver()) {
             embed.setDescription(emojiResult + "\n\n" + (game.isWon() ? "🎉 You won!! Sharkie is so happy for you :D" : "You lose!! Sharkie is so disappointed in you D:"))
                     .addField("The word was", game.getTargetWord(), false)
+                    .setFooter("Brought to you by kyche", event.getUser().getAvatarUrl())
                     .setColor(game.isWon() ? 0x57F287 : 0xED4245);
+
             activeGames.remove(user.getIdLong());
         }
 
