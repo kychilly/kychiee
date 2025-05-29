@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -20,6 +21,34 @@ public class WordleCommand {
     private static final int MAX_ATTEMPTS = 6;
     private static final Map<Long, GameState> activeGames = new HashMap<>();
     private static ArrayList<String> wordList = null;
+    private static String helpDescription = "Description made by ChatGPT :D\n\uD83C\uDFAF How to Play Wordle\n" +
+            "Guess the hidden 5-letter word in 6 tries or less!\n" +
+            "\n" +
+            "\uD83D\uDD24 Making a Guess\n" +
+            "\n" +
+            "Use /guess [word] to submit a 5-letter word\n" +
+            "\n" +
+            "Example: /guess shark\n" +
+            "\n" +
+            "\uD83C\uDFA8 Understanding the Clues\n" +
+            "After each guess, you'll see color-coded hints:\n" +
+            "\n" +
+            "\uD83D\uDFE9 Green letter: Correct letter in the correct spot\n" +
+            "\n" +
+            "\uD83D\uDFE8 Yellow letter: Correct letter but wrong spot\n" +
+            "\n" +
+            "⬛ Gray letter: Letter not in the word at all\n" +
+            "\n" +
+            "\uD83D\uDCA1 Tips\n" +
+            "\n" +
+            "Start with words containing many vowels (like \"audio\")\n" +
+            "\n" +
+            "Use your first guesses to eliminate common letters\n" +
+            "\n" +
+            "Pay attention to which letters you've already tried\n" +
+            "\n" +
+            "❌ Quitting\n" +
+            "Press the Quit Game button anytime to end your current game";
 
     // Command data for registration
     public static CommandData getCommandData() {
@@ -72,8 +101,8 @@ public class WordleCommand {
 
         event.replyEmbeds(embed.build())
                 .addActionRow(
-                        Button.secondary("wordle:hint", "Get Hint"),
-                        Button.danger("wordle:quit", "Quit Game")
+                        Button.danger("wordle:quit", "Quit Game"),
+                        Button.primary("wordle:help", "Help")
                 ).queue();
     }
 
@@ -161,21 +190,17 @@ public class WordleCommand {
     }
 
     // Button handlers
-    public static void handleHint(User user) {
-        if (!activeGames.containsKey(user.getIdLong())) return;
 
-        GameState game = activeGames.get(user.getIdLong());
-        user.openPrivateChannel().queue(channel -> {
-            channel.sendMessage("Wordle hint: " + game.getTargetWord().charAt(0) + "____").queue();
-        });
-    }
-
-    public static void handleQuit(User user) {
+    public static void handleQuit(User user, ButtonInteractionEvent event) {
         if (!activeGames.containsKey(user.getIdLong())) return;
 
         GameState game = activeGames.remove(user.getIdLong());
-        user.openPrivateChannel().queue(channel -> {
-            channel.sendMessage("You quit. The word was: " + game.getTargetWord()).queue();
-        });
+        event.reply("You have quit wordle. The word was: " + game.getTargetWord()).setEphemeral(true).queue();
+    }
+
+    public static void handleHelp(User user, ButtonInteractionEvent event) {
+        if (!activeGames.containsKey(user.getIdLong())) return;//they are not in the game
+
+        event.reply(helpDescription).setEphemeral(true).queue();
     }
 }
