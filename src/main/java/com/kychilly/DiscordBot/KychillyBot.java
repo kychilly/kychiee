@@ -58,8 +58,11 @@ public class KychillyBot {
     public static void main(String[] args) {
         try {
             KychillyBot bot = new KychillyBot();
+        } catch (LoginException e) {
+            System.out.println("lol your bot token is wrong");
         } catch (Exception e) {
-            System.out.println("Provided bot token is incorrect");
+            System.out.println("your bot has a start up error D:");
+            e.printStackTrace();
         }
 
     }
