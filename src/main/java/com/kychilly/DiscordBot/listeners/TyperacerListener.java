@@ -40,15 +40,6 @@ public class TyperacerListener extends ListenerAdapter {
         return (20 / (millis / 60000.0));
     }
 
-    private String createWinMessage(String user, long timeMillis, double wpm) {
-        return String.format(
-                "🏆 %s wins! 🎉\n⏱ Time: %.2f seconds\n⌨️ WPM: %d",
-                user,
-                timeMillis / 1000.0,
-                (int) Math.round(wpm)
-        );
-    }
-
     private MessageEmbed createWinEmbed(MessageReceivedEvent event, long timeMillis, double wpm) {
         return new EmbedBuilder()
                 .setTitle("🏆 TypeRacer Winner! 🏆")

@@ -44,6 +44,8 @@ public class CommandManager extends ListenerAdapter {
             KickCommand.execute(event);
         } else if (command.equals("pfp")) {
             event.replyEmbeds(PfpCommand.execute(event).build()).queue();
+        } else if (command.equals("timeout")) {
+            TimeoutCommand.handleCommand(event);
         } else if (command.equals("wordle")) {
             WordleCommand wordleCommand = new WordleCommand();
             wordleCommand.handleCommand(event);
@@ -99,6 +101,8 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("guess", "Make a guess in your Wordle game")
                 .addOption(OptionType.STRING, "word", "Your 5-letter guess", true));
         commandData.add(Commands.slash("typeracer", "Play typeracer!!"));
+
+        commandData.add(TimeoutCommand.getCommandData());
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
