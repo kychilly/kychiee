@@ -57,6 +57,8 @@ public class CommandManager extends ListenerAdapter {
             }
         } else if (command.equals("help")) {
             event.reply("DM user \"<@840216337119969301>\" for temporary assitance. Additionally, you can join the support server for more help: https://discord.gg/WsnJEutfbd").setEphemeral(true).queue();
+        } else if (command.equals("typeracer")) {
+            new TyperacerCommand(event);
         }
     }
 
@@ -98,6 +100,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(WordleCommand.getCommandData());
         commandData.add(Commands.slash("guess", "Make a guess in your Wordle game")
                 .addOption(OptionType.STRING, "word", "Your 5-letter guess", true));
+        commandData.add(Commands.slash("typeracer", "Play typeracer!!"));
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
