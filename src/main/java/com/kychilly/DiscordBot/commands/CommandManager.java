@@ -33,7 +33,7 @@ public class CommandManager extends ListenerAdapter {
             }
             event.reply(response).setEphemeral(true).queue();
         } else if (command.equals("typeracer")) {
-            //do typeracer lol
+            new TyperacerCommand(event);
         } else if (command.equals("peashooter")) {
             event.reply("<:peashooter:1363400493967343757>").queue();
         } else if (command.equals("remind")) {
@@ -57,8 +57,6 @@ public class CommandManager extends ListenerAdapter {
             }
         } else if (command.equals("help")) {
             event.reply("DM user \"<@840216337119969301>\" for temporary assitance. Additionally, you can join the support server for more help: https://discord.gg/WsnJEutfbd").setEphemeral(true).queue();
-        } else if (command.equals("typeracer")) {
-            new TyperacerCommand(event);
         }
     }
 
