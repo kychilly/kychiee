@@ -2,6 +2,8 @@ package com.kychilly.DiscordBot.listeners;
 
 import com.kychilly.DiscordBot.commands.TyperacerCommand;
 import com.kychilly.DiscordBot.classes.TyperacerPlayer;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +30,9 @@ public class TyperacerListener extends ListenerAdapter {
             double wpm = calculateWPM(timeTaken);
 
             TyperacerCommand.endGame(channelId);
-            event.getChannel().sendMessage(createWinMessage(event.getAuthor().getAsMention(), timeTaken, wpm)).queue();
+            event.getChannel().sendMessageEmbeds(
+                    createWinEmbed(event, timeTaken, wpm)
+            ).queue();
         }
     }
 
@@ -43,5 +47,20 @@ public class TyperacerListener extends ListenerAdapter {
                 timeMillis / 1000.0,
                 (int) Math.round(wpm)
         );
+    }
+
+    private MessageEmbed createWinEmbed(MessageReceivedEvent event, long timeMillis, double wpm) {
+        return new EmbedBuilder()
+                .setTitle("🏆 TypeRacer Winner! 🏆")
+                .setDescription(String.format(
+                        "%s typed the fastest!",
+                        event.getAuthor().getAsMention()
+                ))
+                .setColor(0x00FF00) // Green color
+                .setThumbnail(event.getAuthor().getEffectiveAvatarUrl()) // User's profile picture
+                .addField("⏱ Time", String.format("%.2f seconds", timeMillis / 1000.0), true)
+                .addField("⌨️ WPM", String.valueOf((int) Math.round(wpm)), true)
+                .setFooter("Congratulations!", event.getJDA().getSelfUser().getEffectiveAvatarUrl())
+                .build();
     }
 }
