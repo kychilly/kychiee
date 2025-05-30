@@ -67,10 +67,10 @@ public class TimeoutCommand {
                                     privateChannel -> {
                                         String dmMessage = "⚠️ **Timeout Notice** ⚠️\n\n"
                                                 + "You have been timed out in **" + event.getGuild().getName() + "**\n"
+                                                + "**By:** " + event.getUser().getAsMention() + "**\n"
                                                 + "⏱️ **Duration:** " + formatDuration(duration) + "\n"
                                                 + "📅 **Expires:** <t:" + timeoutUntil.getEpochSecond() + ":R>\n"
-                                                + "❗ **Reason:** " + reason + "\n\n"
-                                                + "Please review the server rules when your timeout expires.";
+                                                + "❗ **Reason:** " + reason;
 
                                         privateChannel.sendMessage(dmMessage).queue(
                                                 null, // No success handler needed
@@ -108,6 +108,7 @@ public class TimeoutCommand {
             case "m" -> Duration.ofMinutes(amount);
             case "h" -> Duration.ofHours(amount);
             case "d" -> Duration.ofDays(amount);
+            case "s" -> Duration.ofSeconds(amount);
             default -> throw new IllegalArgumentException("Invalid time unit");
         };
     }
