@@ -34,6 +34,7 @@ public class Typeracer extends ListenerAdapter {
         if (event.getAuthor().isBot()) {
             return;  // Ignore the message if it's from a bot
         }
+
         String content = event.getMessage().getContentRaw();
         long channelId = event.getChannel().getIdLong();
 
