@@ -41,20 +41,31 @@ public class WordBomb implements Command {
     private final int TURN_TIME = 10;
     private int DIFFICULTY_CODE;
     private int LANGUAGE_CODE;
-    private boolean PRACTICE_MODE;
     private final InputStream img = KychillyBot.class.getResourceAsStream("images/wordbomb.png");
 
-    private final String defaultDescription = (
-            "**Starting Lives:** " + STARTING_LIVES + "\n" +
-                    "**Turn Time**: " + TURN_TIME + "\n" +
-                    "**Language:** " + languageName() + "\n" +
-                    "**Players:**"
-    );
+    private String defaultDescription;
+
+    public String getDifficulty() {
+        if (DIFFICULTY_CODE == 1) {
+            return "Easy";
+        } else if (DIFFICULTY_CODE == 2) {
+            return "Medium";
+        } else {
+            return "Hard";
+        }
+    }
+
     public WordBombPlayer getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
-    public String languageName() {
-        return (LANGUAGE_CODE == 0) ? "English" : "Spanish";
+    public String languageName()
+    {
+        if (LANGUAGE_CODE == 0) {
+            return "English";
+        } else if (LANGUAGE_CODE == 1) {
+            return "Spanish";
+        }
+        return "YOU HAVE A MASSIVE BUG";
     }
     public String playerList() {
         StringBuilder s = new StringBuilder();
@@ -97,17 +108,18 @@ public class WordBomb implements Command {
         players.add(new WordBombPlayer(host, STARTING_LIVES));
         LANGUAGE_CODE = event.getOption("language") == null ? 0 : Objects.requireNonNull(event.getOption("language")).getAsInt();
         DIFFICULTY_CODE = event.getOption("difficulty") == null ? 1 : Objects.requireNonNull(event.getOption("difficulty")).getAsInt();
-        PRACTICE_MODE = event.getOption("practice") != null && Objects.requireNonNull(event.getOption("practice")).getAsBoolean();
+        defaultDescription = (
+                "**Starting Lives:** " + STARTING_LIVES + "\n" +
+                        "**Turn Time**: " + TURN_TIME + "\n" +
+                        "**Language:** " + languageName() + "\n" +
+                        "**Difficulty:** " + getDifficulty() + "\n" +
+                        "**Players:**"
+        );
         channel = event.getChannel();
         dictionary = (LANGUAGE_CODE == 0) ? new HashSet<>(decodeJSON("dictionary_en")) : new HashSet<>(decodeJSON("dictionary_es"));
         prompts = (DIFFICULTY_CODE == 1) ? decodeJSON("easy") : (DIFFICULTY_CODE == 2) ? decodeJSON("medium") : decodeJSON("hard");
 
         activeChannelIDs.add(channel.getId());
-
-        if (PRACTICE_MODE) {
-            event.reply("Practice mode is not supported yet!").queue();
-            return;
-        }
 
         WordBombButtonListener listener = new WordBombButtonListener(this);
         event.getJDA().addEventListener(listener);

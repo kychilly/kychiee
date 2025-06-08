@@ -90,9 +90,6 @@ public class CommandManager extends ListenerAdapter {
                                 .addChoice("English", 0)
                                 .addChoice("Español", 1)
                                 .setRequired(false)
-                        ),
-                        (new OptionData(OptionType.BOOLEAN, "practice", "Select \"True\" to play in practice mode (currently unsupported)")
-                                .setRequired(false)
                         )
                 )
         );
