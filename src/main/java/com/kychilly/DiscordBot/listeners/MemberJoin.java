@@ -18,6 +18,7 @@ public class MemberJoin extends ListenerAdapter {
             eb.setTitle(event.getUser().getName());
             eb.setImage(event.getUser().getEffectiveAvatarUrl() + "?size=4096"); // Max resolution
             eb.setColor(Color.CYAN);
+            eb.setFooter(event.getUser().getAsMention(), event.getUser().getEffectiveAvatarUrl());
         event.getGuild().getSystemChannel().sendMessageEmbeds(eb.build()).queue();
     }
 
