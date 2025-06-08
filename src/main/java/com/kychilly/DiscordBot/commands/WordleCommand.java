@@ -130,24 +130,26 @@ public class WordleCommand {
         String emojiResult = game.getEmojiResult();
         String keyboard = game.getKeyboardDisplay();
 
+        String wordleThumbnail = event.getUser().getAvatarUrl();
+
         EmbedBuilder embed = new EmbedBuilder()
                 .setTitle("Wordle - Attempt " + game.getAttempts() + "/" + MAX_ATTEMPTS)
-                .setDescription(emojiResult)
+                .setThumbnail(wordleThumbnail)
+                .setDescription(emojiResult.substring(0, Math.min(emojiResult.length(), 200))) // Limit description length
                 .addField("Your Guess", result, false)
-                .addField("Keyboard", keyboard, false)
+                .addField("Keyboard", keyboard.length() > 1024 ? keyboard.substring(0, 1020) + "..." : keyboard, false)
                 .setColor(0xFEE75C);
 
         if (game.isWon() || game.isGameOver()) {
-            User userKyche = event.getJDA().getUserById(840216337119969301L);
-            //embed.setDescription(emojiResult + "\n\n" + (game.isWon() ? "🎉 You won!! Sharkie is so happy for you :D" : "You lose!! Sharkie is so disappointed in you D:"))
-                    embed.setThumbnail(userKyche.getAvatarUrl())
-                    .addField("The word was", game.getTargetWord(), false)
-                    .setFooter((game.isWon() ? "🎉 You won!! Sharkie is so happy for you :D" : "You lose!! Sharkie is so disappointed in you D:"), event.getUser().getAvatarUrl())
+            embed.addField("The word was", game.getTargetWord(), false)
+                    .setFooter((game.isWon() ? "🎉 You won!! Sharkie is so happy for you :D" : "You lose!! Sharkie is so disappointed in you D:"),
+                            event.getUser().getAvatarUrl())
                     .setColor(game.isWon() ? 0x57F287 : 0xED4245);
 
             activeGames.remove(user.getIdLong());
         }
 
+        // Force embed reconstruction
         event.replyEmbeds(embed.build()).queue();
     }
 
