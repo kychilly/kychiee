@@ -59,6 +59,8 @@ public class CommandManager extends ListenerAdapter {
             }
         } else if (command.equals("help")) {
             event.reply("DM user \"<@840216337119969301>\" for temporary assitance. Additionally, you can join the support server for more help: https://discord.gg/WsnJEutfbd").setEphemeral(true).queue();
+        } else if (command.equals("kyche")) {
+            event.reply("Kyche's intro stuff: https://docs.google.com/document/d/1OOTuTdukwk9Sbr30bHp-9rkINbiVHhsLgih62inuG3E/edit?tab=t.0").setEphemeral(true).queue();
         }
     }
 

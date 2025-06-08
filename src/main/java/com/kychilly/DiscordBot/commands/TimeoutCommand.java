@@ -16,18 +16,19 @@ import java.util.regex.Matcher;
 
 public class TimeoutCommand {
 
-    private static final Pattern TIME_PATTERN = Pattern.compile("^(\\d+)([mhd])$"); // Matches formats like "30m", "2h", "1d"
+    private static final Pattern TIME_PATTERN = Pattern.compile("^(\\d+)([smhd])$");
 
     public static CommandData getCommandData() {
         return Commands.slash("timeout", "Timeouts a user")
                 .addOption(OptionType.USER, "user", "The user to timeout", true)
-                .addOption(OptionType.STRING, "time", "Duration of timeout (e.g., 30m, 2h, 1d)", true)
+                .addOption(OptionType.STRING, "time", "Duration of timeout (e.g. 30s, 15m, 2h, 1d)", true)
                 .addOption(OptionType.STRING, "reason", "The reason for timing out", false)
                 .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MODERATE_MEMBERS));
     }
 
     public static void handleCommand(SlashCommandInteractionEvent event) {
         // Check permissions
+
         if (!event.getMember().hasPermission(Permission.MODERATE_MEMBERS)) {
             event.reply("You don't have permission to timeout members!").setEphemeral(true).queue();
             return;
@@ -105,23 +106,28 @@ public class TimeoutCommand {
         String unit = matcher.group(2);
 
         return switch (unit) {
+            case "s" -> Duration.ofSeconds(amount);
             case "m" -> Duration.ofMinutes(amount);
             case "h" -> Duration.ofHours(amount);
             case "d" -> Duration.ofDays(amount);
-            case "s" -> Duration.ofSeconds(amount);
             default -> throw new IllegalArgumentException("Invalid time unit");
         };
     }
 
     private static String formatDuration(Duration duration) {
-        if (duration.toDays() > 0) {
-            return duration.toDays() + " day" + (duration.toDays() > 1 ? "s" : "");
-        } else if (duration.toHours() > 0) {
-            return duration.toHours() + " hour" + (duration.toHours() > 1 ? "s" : "");
-        } else if (duration.toMinutes() > 0) {
-            return duration.toMinutes() + " minute" + (duration.toMinutes() > 1 ? "s" : "");
+        long days = duration.toDays();
+        long hours = duration.toHoursPart();   // Uses Java 9+ toHoursPart()
+        long minutes = duration.toMinutesPart(); // Uses Java 9+ toMinutesPart()
+        long seconds = duration.toSecondsPart(); // Uses Java 9+ toSecondsPart()
+
+        if (days > 0) {
+            return days + " day" + (days != 1 ? "s" : "");
+        } else if (hours > 0) {
+            return hours + " hour" + (hours != 1 ? "s" : "");
+        } else if (minutes > 0) {
+            return minutes + " minute" + (minutes != 1 ? "s" : "");
         } else {
-            return duration.toSeconds() + "second" + (duration.toSeconds() > 1 ? "s" : "");//idk how to add seconds lol
+            return seconds + " second" + (seconds != 1 ? "s" : "");
         }
     }
 }
