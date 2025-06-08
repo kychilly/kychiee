@@ -88,7 +88,7 @@ public class CommandManager extends ListenerAdapter {
                         ),
                         (new OptionData(OptionType.INTEGER, "language", "Language to play WordBomb in (default: English)")
                                 .addChoice("English", 0)
-                                .addChoice("Español", 1)
+                                .addChoice("Spanish", 1)
                                 .setRequired(false)
                         )
                 )
