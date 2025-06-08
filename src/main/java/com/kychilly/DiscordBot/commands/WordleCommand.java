@@ -12,15 +12,18 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WordleCommand {
     private static final int MAX_ATTEMPTS = 6;
     private static final Map<Long, GameState> activeGames = new HashMap<>();
     private static ArrayList<String> wordList = null;
+    private static final String[] QWERTY_ROWS = {
+            "Q W E R T Y U I O P",
+            "A S D F G H J K L",
+            "Z X C V B N M"
+    };
     private static String helpDescription = "Description made by ChatGPT :D\n\uD83C\uDFAF How to Play Wordle\n" +
             "Guess the hidden 5-letter word in 6 tries or less!\n" +
             "\n" +
@@ -72,7 +75,7 @@ public class WordleCommand {
         String path = "com/github/KychillyBot/wordle/5letterWords.json";
 
         try (InputStreamReader reader = new InputStreamReader(
-                Objects.requireNonNull(WordleCommand.class.getClassLoader().getResourceAsStream(path)))) {
+                WordleCommand.class.getClassLoader().getResourceAsStream(path))) {
             return gson.fromJson(reader, type);
         } catch (Exception e) {
             throw new RuntimeException("Failed to load word list", e);
@@ -125,17 +128,21 @@ public class WordleCommand {
 
         String result = game.processGuess(guess);
         String emojiResult = game.getEmojiResult();
+        String keyboard = game.getKeyboardDisplay();
 
         EmbedBuilder embed = new EmbedBuilder()
                 .setTitle("Wordle - Attempt " + game.getAttempts() + "/" + MAX_ATTEMPTS)
                 .setDescription(emojiResult)
                 .addField("Your Guess", result, false)
+                .addField("Keyboard", keyboard, false)
                 .setColor(0xFEE75C);
 
         if (game.isWon() || game.isGameOver()) {
-            embed.setDescription(emojiResult + "\n\n" + (game.isWon() ? "🎉 You won!! Sharkie is so happy for you :D" : "You lose!! Sharkie is so disappointed in you D:"))
+            User userKyche = event.getJDA().getUserById(840216337119969301L);
+            //embed.setDescription(emojiResult + "\n\n" + (game.isWon() ? "🎉 You won!! Sharkie is so happy for you :D" : "You lose!! Sharkie is so disappointed in you D:"))
+                    embed.setThumbnail(userKyche.getAvatarUrl())
                     .addField("The word was", game.getTargetWord(), false)
-                    .setFooter("Brought to you by kyche", event.getUser().getAvatarUrl())
+                    .setFooter((game.isWon() ? "🎉 You won!! Sharkie is so happy for you :D" : "You lose!! Sharkie is so disappointed in you D:"), event.getUser().getAvatarUrl())
                     .setColor(game.isWon() ? 0x57F287 : 0xED4245);
 
             activeGames.remove(user.getIdLong());
@@ -150,10 +157,15 @@ public class WordleCommand {
         private int attempts = 0;
         private boolean won = false;
         private final StringBuilder emojiResult = new StringBuilder();
+        private final Map<Character, LetterStatus> letterStatuses = new HashMap<>();
 
         public GameState(String targetWord) {
             this.targetWord = targetWord;
             System.out.println(targetWord);
+            // Initialize all letters as unused
+            for (char c = 'A'; c <= 'Z'; c++) {
+                letterStatuses.put(c, LetterStatus.UNUSED);
+            }
         }
 
         public String processGuess(String guess) {
@@ -168,12 +180,18 @@ public class WordleCommand {
                 if (g == t) {
                     result.append("**").append(g).append("** ");
                     emojiResult.append("🟩 ");
+                    letterStatuses.put(g, LetterStatus.CORRECT_POSITION);
                 } else if (targetWord.contains(String.valueOf(g))) {
                     result.append(g).append(" ");
                     emojiResult.append("🟨 ");
+                    // Only update if not already marked as correct position
+                    if (letterStatuses.get(g) != LetterStatus.CORRECT_POSITION) {
+                        letterStatuses.put(g, LetterStatus.WRONG_POSITION);
+                    }
                 } else {
                     result.append("_").append(g).append("_ ");
                     emojiResult.append("⬛ ");
+                    letterStatuses.put(g, LetterStatus.NOT_IN_WORD);
                 }
             }
 
@@ -183,14 +201,54 @@ public class WordleCommand {
         }
 
         public String getEmojiResult() { return emojiResult.toString(); }
+
+        public String getKeyboardDisplay() {
+            StringBuilder keyboardBuilder = new StringBuilder();
+
+            for (String row : QWERTY_ROWS) {
+                String keyboardRow = Arrays.stream(row.split(" "))
+                        .map(letter -> {
+                            char c = letter.charAt(0);
+                            LetterStatus status = letterStatuses.get(c);
+                            return getColoredLetter(c, status);
+                        })
+                        .collect(Collectors.joining(" "));
+
+                keyboardBuilder.append(keyboardRow).append("\n");
+            }
+
+            return keyboardBuilder.toString();
+        }
+
+        private String getColoredLetter(char c, LetterStatus status) {
+            switch (status) {
+                case UNUSED:
+                    return "`" + c + "`";
+                case NOT_IN_WORD:
+                    return "`\uD83D\uDD32`"; // Black square
+                case WRONG_POSITION:
+                    return "`\uD83D\uDFE8`"; // Yellow square
+                case CORRECT_POSITION:
+                    return "`\uD83D\uDFE9`"; // Green square
+                default:
+                    return "`" + c + "`";
+            }
+        }
+
         public int getAttempts() { return attempts; }
         public String getTargetWord() { return targetWord; }
         public boolean isWon() { return won; }
         public boolean isGameOver() { return won || attempts >= MAX_ATTEMPTS; }
     }
 
-    // Button handlers
+    private enum LetterStatus {
+        UNUSED,          // White/neutral - letter hasn't been tried yet
+        NOT_IN_WORD,     // Black/gray - letter not in word at all
+        WRONG_POSITION,  // Yellow - letter in word but wrong position
+        CORRECT_POSITION // Green - letter in correct position
+    }
 
+    // Button handlers
     public static void handleQuit(User user, ButtonInteractionEvent event) {
         if (!activeGames.containsKey(user.getIdLong())) return;
 
@@ -199,7 +257,7 @@ public class WordleCommand {
     }
 
     public static void handleHelp(User user, ButtonInteractionEvent event) {
-        if (!activeGames.containsKey(user.getIdLong())) return;//they are not in the game
+        if (!activeGames.containsKey(user.getIdLong())) return;
 
         event.reply(helpDescription).setEphemeral(true).queue();
     }
