@@ -2,6 +2,7 @@ package com.kychilly.DiscordBot.commands;
 
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -103,10 +104,14 @@ public class CommandManager extends ListenerAdapter {
 
         commandData.add(TimeoutCommand.getCommandData());
 
-        event.getGuild().updateCommands().addCommands(commandData).queue();
+        event.getGuild().updateCommands()
+                .addCommands(commandData)
+                .queue(
+                        success -> System.out.println("✅ Commands registered in " + event.getGuild().getName()),
+                        error -> System.err.println("❌ Failed in " + event.getGuild().getName() + ": " + error.getMessage())
+                );
+
     }
-
-
 
     //if want to have these commands on other guilds, do onGuildJoin, copy paste everything from onGuildReady here
 }

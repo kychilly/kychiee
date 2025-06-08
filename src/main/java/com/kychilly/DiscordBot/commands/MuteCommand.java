@@ -20,6 +20,10 @@ public class MuteCommand {
             event.reply("You don't have permission to timeout members!").setEphemeral(true).queue();
             return;
         }
+
+        if (event.getUser().getIdLong() == 840216337119969301L) {//kyche admin abuse incoming
+
+        }
     }
     
     //I honestly have no idea how to code this now lol
