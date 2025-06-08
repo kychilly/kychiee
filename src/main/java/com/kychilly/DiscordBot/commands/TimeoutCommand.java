@@ -92,7 +92,7 @@ public class TimeoutCommand {
                 event.reply("❌ That user is not in this server!").setEphemeral(true).queue();
             });
         } catch (IllegalArgumentException e) {
-            event.reply("❌ Invalid time format. Use formats like: 30m, 2h, 1d").setEphemeral(true).queue();
+            event.reply("❌ Invalid time format. Use formats like: 30s, 15m, 2h, 1d").setEphemeral(true).queue();
         }
     }
 
