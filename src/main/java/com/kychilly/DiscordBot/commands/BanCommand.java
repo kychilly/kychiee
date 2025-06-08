@@ -1,6 +1,7 @@
 package com.kychilly.DiscordBot.commands;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -9,6 +10,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.Result;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,56 +31,71 @@ public class BanCommand {
         }
 
         // Get the target user
-        OptionMapping targetOption = event.getOption("user");
-        if (targetOption == null) {
-            event.reply("Please specify a user to ban!").setEphemeral(true).queue();
-            return;
-        }
-
-        Member target = targetOption.getAsMember();
-        if (target == null) {
-            event.reply("That user is not in this server!").setEphemeral(true).queue();
-            return;
-        }
+        User targetUser = event.getOption("user").getAsUser();
+        String reason = event.getOption("reason") != null
+                ? event.getOption("reason").getAsString()
+                : "No reason provided";
 
         // Check if target is the command executor
-        if (target.getIdLong() == event.getMember().getIdLong()) {
+        if (targetUser.getIdLong() == event.getMember().getIdLong()) {
             event.reply("You cannot ban yourself!").setEphemeral(true).queue();
             return;
         }
 
-        // Check if target is the server owner
-        if (target.isOwner()) {
-            event.reply("You cannot ban the server owner!").setEphemeral(true).queue();
-            return;
-        }
+        // Try to get as member (checks if in server)
+        event.getGuild().retrieveMember(targetUser).queue(
+                target -> {
+                    // Check if target is server owner
+                    if (target.isOwner()) {
+                        event.reply("You cannot ban the server owner!").setEphemeral(true).queue();
+                        return;
+                    }
 
-        // Check if bot can interact with target
-        if (!event.getGuild().getSelfMember().canInteract(target)) {
-            event.reply("I cannot ban that user because they have a higher role than me!").setEphemeral(true).queue();
-            return;
-        }
+                    // Check role hierarchy
+                    if (!event.getMember().canInteract(target)) {
+                        event.reply("You cannot ban that user (higher/equal role)!").setEphemeral(true).queue();
+                        return;
+                    }
 
-        // Check if executor can interact with target (role hierarchy check)
-        if (!event.getMember().canInteract(target)) {
-            event.reply("You cannot ban that user because they have a higher or equal role to you!").setEphemeral(true).queue();
-            return;
-        }
+                    if (!event.getGuild().getSelfMember().canInteract(target)) {
+                        event.reply("I can't ban that user (my role is too low)!").setEphemeral(true).queue();
+                        return;
+                    }
 
-        // Get reason (optional)
-        String reason = "No reason provided";
-        OptionMapping reasonOption = event.getOption("reason");
-        if (reasonOption != null) {
-            reason = reasonOption.getAsString();
-        }
+                    // Send DM first
+                    sendBanDM(targetUser, event.getGuild(), event.getUser(), reason).queue(
+                            dmSuccess -> performBan(event, targetUser, reason, true),
+                            dmError -> performBan(event, targetUser, reason, false)
+                    );
+                },
+                // User not in server (can still ban)
+                error -> performBan(event, targetUser, reason, false)
+        );
+    }
 
-        // Ban the user
+    private static void performBan(SlashCommandInteractionEvent event, User target, String reason, boolean dmSuccess) {
+        String successMessage = dmSuccess
+                ? "Banned " + target.getAsMention() + " \nReason: " + reason
+                : "Banned " + target.getAsMention() + " (could not DM them)";
+
         event.getGuild().ban(target, 0, TimeUnit.SECONDS)
                 .reason("Banned by " + event.getUser().getName() + ": " + reason)
                 .queue(
-                        success -> event.reply("Banned " + target.getAsMention() + " successfully!").queue(),
-                        error -> event.reply("Failed to ban user: " + error.getMessage()).setEphemeral(true).queue()
+                        success -> event.reply(successMessage).queue(),
+                        error -> event.reply("Failed to ban: " + error.getMessage()).setEphemeral(true).queue()
                 );
+    }
+
+    private static RestAction<Void> sendBanDM(User target, Guild guild, User moderator, String reason) {
+        String dmMessage = "⚠️ **You have been banned** ⚠️\n\n" +
+                "**Server:** " + guild.getName() + "\n" +
+                "**Moderator:** " + moderator.getAsMention() + "\n" +
+                "**Reason:** " + reason + "\n\n" +
+                "Contact the Woodland Mansion support server if you believe this was a mistake\n";
+
+        return target.openPrivateChannel()
+                .flatMap(channel -> channel.sendMessage(dmMessage))
+                .map(msg -> (Void) null); // Convert Message to Void
     }
 
     // Command registration data

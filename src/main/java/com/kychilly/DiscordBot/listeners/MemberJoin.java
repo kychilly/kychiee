@@ -14,6 +14,7 @@ public class MemberJoin extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        System.out.println(event.getUser().getName() + " just joined");
         EmbedBuilder eb = new EmbedBuilder();
             eb.setTitle(event.getUser().getName());
             eb.setImage(event.getUser().getEffectiveAvatarUrl() + "?size=4096"); // Max resolution
