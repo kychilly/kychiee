@@ -180,18 +180,20 @@ public class WordleCommand {
                 char t = targetWord.charAt(i);
 
                 if (g == t) {
-                    result.append("**").append(g).append("** ");
+                    // Add to main result with colored letter block
+                    result.append(createLetterBlock(g, "green")).append(" ");
+                    // Add to emoji grid
                     emojiResult.append("🟩 ");
+                    // Update letter status
                     letterStatuses.put(g, LetterStatus.CORRECT_POSITION);
                 } else if (targetWord.contains(String.valueOf(g))) {
-                    result.append(g).append(" ");
+                    result.append(createLetterBlock(g, "yellow")).append(" ");
                     emojiResult.append("🟨 ");
-                    // Only update if not already marked as correct position
                     if (letterStatuses.get(g) != LetterStatus.CORRECT_POSITION) {
                         letterStatuses.put(g, LetterStatus.WRONG_POSITION);
                     }
                 } else {
-                    result.append("_").append(g).append("_ ");
+                    result.append(createLetterBlock(g, "black")).append(" ");
                     emojiResult.append("⬛ ");
                     letterStatuses.put(g, LetterStatus.NOT_IN_WORD);
                 }
@@ -200,6 +202,15 @@ public class WordleCommand {
             emojiResult.append("\n");
             won = guess.equals(targetWord);
             return result.toString();
+        }
+
+        private String createLetterBlock(char letter, String color) {
+            return switch (color) {
+                case "green" -> "🟩" + letter;
+                case "yellow" -> "🟨" + letter;
+                case "black" -> "⬛" + letter;
+                default -> "⬜" + letter;
+            };
         }
 
         public String getEmojiResult() { return emojiResult.toString(); }
