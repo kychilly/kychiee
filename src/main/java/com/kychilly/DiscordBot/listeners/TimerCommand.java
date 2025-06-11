@@ -42,8 +42,9 @@ public class TimerCommand extends ListenerAdapter {
             return;
         }
 
-        event.getChannel().sendMessage("⏳ Timer: " + seconds + "s").queue(timerMessage -> {
+        event.getChannel().sendMessage("⏳ Time : " + seconds + "s\n"+ "⏳ Timer: " + seconds + "s").queue(timerMessage -> {
             final int[] timeLeft = {seconds};
+            int time = timeLeft[0];
 
             ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -52,7 +53,7 @@ public class TimerCommand extends ListenerAdapter {
                     scheduler.shutdown();
                     timerMessage.reply(event.getAuthor().getAsMention() + " YOUR TIME HAS COME TO AN END :index_pointing_at_the_viewer::robot:").queue();
                 } else {
-                    timerMessage.editMessage("⏳ Timer: " + timeLeft[0] + "s").queue();
+                    timerMessage.editMessage("⏳ Time : " + time + "s\n" + "⏳ Timer: " + timeLeft[0] + "s").queue();
                     timeLeft[0]--;
                 }
             }, 0, 1, TimeUnit.SECONDS);

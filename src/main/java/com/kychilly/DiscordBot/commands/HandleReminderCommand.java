@@ -45,7 +45,7 @@ public class HandleReminderCommand {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.schedule(() -> {
             event.getChannel().sendMessage(user.getAsMention() + " 🔔 Reminder: " + reminderMessage).queue(reminderMsg -> {
-                // Send an ephemeral follow-up (does NOT reply visually, but confirms)
+                // temp fix(everyone sees the reply message)
                 event.getHook().sendMessageEmbeds(embedBuilder.build())
                         .setEphemeral(false)
                         .queue();
