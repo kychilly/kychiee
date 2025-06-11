@@ -66,48 +66,7 @@ public class KychillyBot {
             System.out.println("your bot has a start up error D:");
             e.printStackTrace();
         }
-//# 📜・Server Rules
-//
-//Welcome to the server! To keep this community safe, respectful, and focused, please follow the rules below:
-//
-//---
-//
-//## 1. 🧍‍♂️ Be Respectful
-//Treat all members with kindness and professionalism. No hate speech, harassment, racism, sexism, or discrimination of any kind.
-//
-//## 2. 🛠️ Keep It Professional
-//This is a development-focused server. Avoid trolling, drama, or immature behavior.
-//
-//## 3. 🚫 No Spamming
-//Don’t spam messages, pings, emojis, images, or links. No unsolicited advertisements or invites.
-//
-//## 4. 🧵 Use Channels Correctly
-//Post in the correct channels and stay on topic. Check pinned messages or channel descriptions when in doubt.
-//
-//## 5. 🚷 No NSFW or Inappropriate Content
-//Keep all content clean and safe for work — including usernames, profile pictures, and shared media.
-//
-//## 6. 🔐 Respect Privacy
-//Do not share private or sensitive information — yours or anyone else's.
-//
-//## 7. 📜 Follow Discord's Terms of Service
-//Any activity that violates Discord's ToS will result in immediate action.
-//
-//## 8. 🛡️ Respect Staff Decisions
-//Admins and moderators are here to help. Follow their instructions and cooperate if contacted.
-//
-//---
-//
-//## ⚠️ Enforcement
-//
-//- 🟡 Minor offenses may result in warnings.
-//- 🔴 Repeated or severe violations can lead to a kick or permanent ban.
-//- 🚫 Major offenses (e.g., harassment, doxxing, NSFW posts) = **Instant ban**.
-//
-//---
-//
-//✅ By staying in this server, you agree to follow these rules.
-//
-//Thanks for keeping this community awesome!
+
+
     }
 }
