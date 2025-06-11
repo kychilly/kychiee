@@ -148,6 +148,17 @@ public class PingCommands extends ListenerAdapter {
             }
             try {
                 event.getChannel().sendMessage(meow).queue();
+                String dm = meow;
+                event.getAuthor().openPrivateChannel().queue(
+                        (privateChannel) -> {
+
+                            privateChannel.sendMessage(dm).queue(
+                                    success -> System.out.println(""),//I think you have to put something here
+                                    error -> System.err.println("Failed to send DM: " + error.getMessage())
+                            );
+                        },
+                        error -> System.err.println("Could not open private channel: " + error.getMessage())
+                );
                 Thread.sleep(400);
             } catch (Exception e) {
                 System.out.println("HELP ME");
