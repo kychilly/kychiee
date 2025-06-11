@@ -1,11 +1,15 @@
 package com.kychilly.DiscordBot.commands;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
+import java.awt.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -34,12 +38,16 @@ public class HandleReminderCommand {
 
         event.reply("⏰ Reminder set for " + user.getName() + " in " + timeInput + ": " + reminderMessage).queue();
 
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setDescription("Reminder sent by " + reminderUser.getAsMention())
+                .setColor(Color.GREEN);
+
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.schedule(() -> {
             event.getChannel().sendMessage(user.getAsMention() + " 🔔 Reminder: " + reminderMessage).queue(reminderMsg -> {
                 // Send an ephemeral follow-up (does NOT reply visually, but confirms)
-                event.getHook().sendMessage("Reminder sent by " + reminderUser.getAsMention())
-                        .setEphemeral(true)
+                event.getHook().sendMessageEmbeds(embedBuilder.build())
+                        .setEphemeral(false)
                         .queue();
             });
             scheduler.shutdown();
