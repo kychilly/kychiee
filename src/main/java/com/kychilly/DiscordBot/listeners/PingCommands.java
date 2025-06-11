@@ -21,8 +21,9 @@ public class PingCommands extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
-            return;  // Ignore the message if it's from a bot
+            return;
         }
+
 
         String message = event.getMessage().getContentRaw();
 
@@ -59,6 +60,9 @@ public class PingCommands extends ListenerAdapter {
 
         if (message.contains("skibidi")) {
             event.getChannel().sendMessage("dop dop dop yes yes").queue();
+        }
+        if (message.contains("cat") && event.getGuild().getId().equals("722009112921243678")) {
+            meowCommand(event);
         }
 
     }
@@ -102,15 +106,15 @@ public class PingCommands extends ListenerAdapter {
             event.getMessage().delete().queue();
             for (int i = 0; i < 5; i++) {
                 event.getChannel().sendMessage(theUserMention).queue(message -> {
-                    // Schedule deletion after 5 seconds
-                    message.delete().queueAfter(5, TimeUnit.SECONDS,
+                    // Schedule deletion after 2 seconds
+                    message.delete().queueAfter(2, TimeUnit.SECONDS,
                             success -> {
                             },
                             error -> System.out.println("Couldn't delete message: " + error.getMessage())
                     );
                 });
             }
-            Thread.sleep(5000);
+
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -133,6 +137,22 @@ public class PingCommands extends ListenerAdapter {
     public void banUser(MessageReceivedEvent event, String guy) {
         if (hasAdminPerms(event)) {
             // Ban implementation
+        }
+    }
+
+    public void meowCommand(MessageReceivedEvent event) {
+        for (int i = 0; i < Math.random()*7 + 3; i++) {
+            String meow = "";
+            for (int p = 0; p < Math.random()*15 + 1; p++) {
+                meow += "meow ";
+            }
+            try {
+                event.getChannel().sendMessage(meow).queue();
+                Thread.sleep(400);
+            } catch (Exception e) {
+                System.out.println("HELP ME");
+            }
+
         }
     }
 
