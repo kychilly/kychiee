@@ -1,5 +1,6 @@
 package com.kychilly.DiscordBot;
 
+import com.kychilly.DiscordBot.classes.ShutdownHandler;
 import com.kychilly.DiscordBot.commands.CommandManager;
 //import com.kychilly.DiscordBot.commands.ReminderCommand;
 import com.kychilly.DiscordBot.listeners.*;
@@ -20,7 +21,7 @@ public class KychillyBot {
     private final ShardManager shardManager;
     private final Dotenv config;
 
-    private static final long CHANNEL_ID = 1186115783013711894L;
+    private static final String CHANNEL_ID = "1186115783013711894";
 
 
     public KychillyBot() throws LoginException {
@@ -38,15 +39,7 @@ public class KychillyBot {
 
         shardManager = builder.build();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            TextChannel channel = shardManager.getTextChannelById(CHANNEL_ID);
-            if (channel != null) {
-                channel.sendMessage("⚠️ Bot was **forcefully** terminated!").queue(
-                        success -> System.out.println("Force shutdown message sent"),
-                        error -> System.err.println("Force shutdown failed: " + error)
-                );
-            }
-        }));
+
 
         //register listeners
         shardManager.addEventListener(new PingCommands());

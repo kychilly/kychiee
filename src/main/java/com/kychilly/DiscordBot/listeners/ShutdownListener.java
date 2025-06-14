@@ -29,8 +29,17 @@ public class ShutdownListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        String message = event.getMessage().getContentRaw();
         if (event.getAuthor().isBot()) {
             return;
+        }
+        if (event.getMember().getUser().getIdLong() == 840216337119969301L) {
+            if (message.equals("!shutdown")) {
+                event.getChannel().sendMessage("Shutting down...").queue(response -> {
+                    event.getJDA().shutdown(); // This gracefully shuts down the bot
+                });
+                return; // Exit the method to prevent other code from executing
+            }
         }
         TextChannel channel = event.getJDA().getTextChannelById(CHANNEL_ID);
         channel.sendMessage("your stupid listener is online").queue();
