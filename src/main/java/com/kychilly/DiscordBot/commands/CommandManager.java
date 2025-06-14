@@ -70,31 +70,34 @@ public class CommandManager extends ListenerAdapter {
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
         List<CommandData> commandData = new ArrayList<>();
+
+        //filler commands
         commandData.add(Commands.slash("welcome", "welcomes user"));
         commandData.add(Commands.slash("roles", "gets all roles on discord server"));
         commandData.add(Commands.slash("peashooter", "peashooter image"));
         commandData.add(Commands.slash("help", "Gives additional help"));
+        commandData.add(PfpCommand.getCommandData());
         commandData.add(HandleReminderCommand.getCommandData());
+
+        //moderation commands
         commandData.add(BanCommand.getCommandData());
         commandData.add(KickCommand.getCommandData());
+        commandData.add(TimeoutCommand.getCommandData());
 
-
-
-        commandData.add(Commands.slash("pfp", "Get a user's profile picture")
-                .addOptions(PfpCommand.getOptions()));
-
+        //game commands
         commandData.add(WordBomb.getCommandData());
-
-
         commandData.add(WordleCommand.getCommandData());
         commandData.add(Commands.slash("guess", "Make a guess in your Wordle game")
                 .addOption(OptionType.STRING, "word", "Your 5-letter guess", true));
+
         commandData.add(Commands.slash("typeracer", "Play typeracer!!"));
 
-        commandData.add(TimeoutCommand.getCommandData());
+        //kyche commands
         commandData.add(Commands.slash("kyche", "kyche's intro :D"));
         commandData.add(Commands.slash("kychegithub", "kyche's amazing github"));
 
+
+        //updates all commands in guilds
         event.getGuild().updateCommands()
                 .addCommands(commandData)
                 .queue(

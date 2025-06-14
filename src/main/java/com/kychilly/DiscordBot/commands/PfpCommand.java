@@ -5,6 +5,8 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.awt.Color;
@@ -18,6 +20,11 @@ public class PfpCommand {
         return Collections.singletonList(
                 new OptionData(OptionType.USER, "user", "The user whose pfp you want", false)
         );
+    }
+
+    public static CommandData getCommandData() {
+        return (Commands.slash("pfp", "Get a user's profile picture")
+                .addOption(OptionType.USER, "user", "The user whose pfp you want", false));
     }
 
     // Command execution
