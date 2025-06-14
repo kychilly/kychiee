@@ -64,6 +64,8 @@ public class CommandManager extends ListenerAdapter {
             event.reply("Kyche's intro stuff: https://docs.google.com/document/d/1OOTuTdukwk9Sbr30bHp-9rkINbiVHhsLgih62inuG3E/edit?tab=t.0").setEphemeral(true).queue();
         } else if (command.equalsIgnoreCase("kycheGithub")) {
             event.reply("Kyche's amazing github: https://github.com/kychilly/kychiee").queue();
+        } else if (command.equalsIgnoreCase("shutdown")) {
+            ShutdownCommand.execute(event);
         }
     }
 
@@ -96,6 +98,9 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("kyche", "kyche's intro :D"));
         commandData.add(Commands.slash("kychegithub", "kyche's amazing github"));
 
+
+        //bot commands
+        commandData.add(ShutdownCommand.getCommandData());
 
         //updates all commands in guilds
         event.getGuild().updateCommands()
