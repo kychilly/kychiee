@@ -102,6 +102,8 @@ public class CommandManager extends ListenerAdapter {
         //bot commands
         commandData.add(ShutdownCommand.getCommandData());
 
+
+
         //updates all commands in guilds
         event.getGuild().updateCommands()
                 .addCommands(commandData)

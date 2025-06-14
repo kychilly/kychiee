@@ -14,7 +14,7 @@ public class ShutdownCommand {
 
     public static void execute(SlashCommandInteractionEvent event) {
         if (event.getUser().getIdLong() == 840216337119969301L) {
-            event.reply("I am shutting down now. Bye byes D:").queue();
+            event.reply("\uD83D\uDEA8 I am shutting down \uD83D\uDEA8  - Bye bye D:").queue();
             event.getJDA().shutdown();
         } else {
             event.reply("You don't have permission to use this command!").setEphemeral(true).queue();
