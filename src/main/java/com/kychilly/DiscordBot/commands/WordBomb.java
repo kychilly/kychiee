@@ -10,6 +10,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.FileUpload;
 
@@ -44,6 +48,25 @@ public class WordBomb implements Command {
     private final InputStream img = KychillyBot.class.getResourceAsStream("images/wordbomb.png");
 
     private String defaultDescription;
+
+    public static CommandData getCommandData() {
+        return Commands.slash("wordbomb", "Play WordBomb on Discord!")
+                .addOptions(
+                        (new OptionData(OptionType.INTEGER, "difficulty", "Difficulty of the letter sequences given")
+                                .addChoice("Easy", 1)
+                                .addChoice("Medium", 2)
+                                .addChoice("Hard", 3)
+                                .setRequired(true)
+                        ),
+                        (new OptionData(OptionType.INTEGER, "language", "Language to play WordBomb in (default: English)")
+                                .addChoice("English", 0)
+                                .addChoice("Spanish", 1)
+                                .setRequired(false)
+                        )
+                );
+    }
+
+
 
     public String getDifficulty() {
         if (DIFFICULTY_CODE == 1) {

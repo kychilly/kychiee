@@ -83,21 +83,8 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("pfp", "Get a user's profile picture")
                 .addOptions(PfpCommand.getOptions()));
 
-        commandData.add(Commands.slash("wordbomb", "Play WordBomb on Discord!")
-                .addOptions(
-                        (new OptionData(OptionType.INTEGER, "difficulty", "Difficulty of the letter sequences given")
-                                .addChoice("Easy", 1)
-                                .addChoice("Medium", 2)
-                                .addChoice("Hard", 3)
-                                .setRequired(true)
-                        ),
-                        (new OptionData(OptionType.INTEGER, "language", "Language to play WordBomb in (default: English)")
-                                .addChoice("English", 0)
-                                .addChoice("Spanish", 1)
-                                .setRequired(false)
-                        )
-                )
-        );
+        commandData.add(WordBomb.getCommandData());
+
 
         commandData.add(WordleCommand.getCommandData());
         commandData.add(Commands.slash("guess", "Make a guess in your Wordle game")
