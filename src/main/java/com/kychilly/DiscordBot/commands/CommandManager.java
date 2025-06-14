@@ -54,7 +54,7 @@ public class CommandManager extends ListenerAdapter {
             WordleCommand.handleGuess(event);
         } else if (command.equals("wordbomb")) {
             try {
-                new WordBomb().execute(event); // instantiate and run
+                new WordBomb().execute(event); // for some reason needs a thrown exception
             } catch (IOException e) {
                 event.reply("An error occurred while starting WordBomb: " + e.getMessage()).setEphemeral(true).queue();
             }

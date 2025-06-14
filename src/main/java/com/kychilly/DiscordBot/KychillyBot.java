@@ -6,6 +6,7 @@ import com.kychilly.DiscordBot.listeners.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -18,6 +19,9 @@ public class KychillyBot {
 
     private final ShardManager shardManager;
     private final Dotenv config;
+
+    private static final long CHANNEL_ID = 1186115783013711894L;
+
 
     public KychillyBot() throws LoginException {
         config = Dotenv.configure().ignoreIfMissing().load();
@@ -34,6 +38,16 @@ public class KychillyBot {
 
         shardManager = builder.build();
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            TextChannel channel = shardManager.getTextChannelById(CHANNEL_ID);
+            if (channel != null) {
+                channel.sendMessage("⚠️ Bot was **forcefully** terminated!").queue(
+                        success -> System.out.println("Force shutdown message sent"),
+                        error -> System.err.println("Force shutdown failed: " + error)
+                );
+            }
+        }));
+
         //register listeners
         shardManager.addEventListener(new PingCommands());
         //shardManager.addEventListener(new MemberJoin());
@@ -43,7 +57,7 @@ public class KychillyBot {
         shardManager.addEventListener(new ReminderCommand());
         shardManager.addEventListener(new TimerCommand());
         shardManager.addEventListener(new TyperacerListener());
-        shardManager.addEventListener(new TyperacerListener());
+        shardManager.addEventListener(new ShutdownListener());
         //shardManager.addEventListener(new RuleCommandListener());
 
         //shardManager.addEventListener(new RussianRouletteListener());
