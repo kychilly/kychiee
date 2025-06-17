@@ -66,6 +66,8 @@ public class CommandManager extends ListenerAdapter {
             event.reply("Kyche's amazing github: https://github.com/kychilly/kychiee").queue();
         } else if (command.equalsIgnoreCase("shutdown")) {
             ShutdownCommand.execute(event);
+        } else if (command.equals("change-nickname")) {
+            ChangeNicknameCommand.execute(event);
         }
     }
 
@@ -85,6 +87,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(BanCommand.getCommandData());
         commandData.add(KickCommand.getCommandData());
         commandData.add(TimeoutCommand.getCommandData());
+        commandData.add(ChangeNicknameCommand.getCommandData());
 
         //game commands
         commandData.add(WordBomb.getCommandData());
