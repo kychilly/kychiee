@@ -68,6 +68,8 @@ public class CommandManager extends ListenerAdapter {
             ShutdownCommand.execute(event);
         } else if (command.equals("change-nickname")) {
             ChangeNicknameCommand.execute(event);
+        } else if (command.equals("channel")) {
+            TextChannelCommand.execute(event);
         }
     }
 
@@ -104,6 +106,7 @@ public class CommandManager extends ListenerAdapter {
 
         //bot commands
         commandData.add(ShutdownCommand.getCommandData());
+        commandData.add(TextChannelCommand.getCommandData());
 
 
 
