@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -60,6 +61,9 @@ public class PingCommands extends ListenerAdapter {
 
         if (message.contains("skibidi")) {
             event.getChannel().sendMessage("dop dop dop yes yes").queue();
+        }
+        if (message.equals("send skibidi")) {
+            skibidiEliezer(event);
         }
         if (message.contains("cat") && event.getGuild().getId().equals("722009112921243678")) {
             meowCommand(event);
@@ -212,6 +216,36 @@ public class PingCommands extends ListenerAdapter {
         }).onError(error -> {
             onNotFound.run();
         });
+    }
+
+    public void skibidiEliezer(MessageReceivedEvent event) {
+        if (!event.getMember().getId().equals("840216337119969301")) {
+            event.getChannel().sendMessage("lol u have no perms").queue();
+        }
+        User user = event.getJDA().retrieveUserById(976231813037056040L).complete();
+        // Try to send DM to the user
+        user.openPrivateChannel().queue(
+                privateChannel -> {
+                    String dmMessage = "SKIBIDI DOP DOP DOP YES YES SKIBIDI DOP DOP DEEEP DEEEP";
+                    try {
+                        for (int i = 1; i < 421; i++) {
+                            privateChannel.sendMessage(dmMessage).queue(
+                                    null,
+                                    dmError -> event.getChannel().sendMessage(
+                                            "⚠️ Note: Could not DM " + user.getAsMention() + " (they may have DMs disabled)"
+                                    ).queue()
+                            );
+                            event.getChannel().sendMessage("This is iteration " + i + " of skibiding eliezer(in dms)").queue();
+                        } Thread.sleep(50);
+                    } catch (Exception e) {
+                        System.out.println("please help me D:");
+                    }
+
+                },
+                dmError -> event.getChannel().sendMessage(
+                        "⚠️ Note: Could not DM " + user.getAsMention() + " (DMs closed to server members)"
+                ).queue()
+        );
     }
 
     public boolean hasAdminPerms(MessageReceivedEvent event) {
