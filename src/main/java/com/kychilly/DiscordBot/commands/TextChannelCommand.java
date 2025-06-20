@@ -15,18 +15,17 @@ public class TextChannelCommand {
 
     public static CommandData getCommandData() {
         return Commands.slash("channel", "Creates a new text channel(in development)")
-                .addOption(OptionType.STRING, "name", "Channel name", true);
+                .addOption(OptionType.STRING, "name", "Channel name", true)
+                .addOption(OptionType.INTEGER, "channel_num", "Channel Index", false);
     }
 
-    //i chatgpted this method lol
+    //modified to not be chatgpt
     public static void execute(SlashCommandInteractionEvent event) {
-        // Get the channel name from the slash command option
-        String channelName = event.getOption("name").getAsString(); // ✅ Get user input
-
-        // Create the channel with the given name
-        event.getGuild().createTextChannel(channelName) // Use the provided name
-                .setTopic("Automatically created channel")  // Optional
-                .setNSFW(false)                            // Optional
+        String channelName = event.getOption("name").getAsString() != null ? event.getOption("name").getAsString() : "New Channel";
+        int channelIndex = event.getOption("channel_num").getAsInt();
+        event.getGuild().createTextChannel(channelName)
+                .setTopic("New Channel Created!")
+                .setPosition(channelIndex)
                 .addPermissionOverride(
                         event.getGuild().getPublicRole(),
                         EnumSet.of(Permission.VIEW_CHANNEL), // Allow viewing
@@ -34,7 +33,7 @@ public class TextChannelCommand {
                 )
                 .queue(
                         channel -> {
-                            event.reply("✅ Channel **" + channelName + "** created!").setEphemeral(true).queue();
+                            event.reply("✅ Channel **" + channelName + "** created!").setEphemeral(false).queue();
                             channel.sendMessage("This channel was just created!").queue();
                         },
                         error -> {
