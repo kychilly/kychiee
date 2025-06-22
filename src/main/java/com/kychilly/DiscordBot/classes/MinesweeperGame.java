@@ -11,6 +11,9 @@ public class MinesweeperGame {
     private boolean firstClick;
     private boolean gameOver;
     private final Random random = new Random();
+    private int lastClickedX = -1;
+    private int lastClickedY = -1;
+
 
     public MinesweeperGame(int width, int height, int bombCount) {
         this.width = width;
@@ -66,6 +69,8 @@ public class MinesweeperGame {
     }
 
     public boolean reveal(int x, int y) {
+        this.lastClickedX = x;
+        this.lastClickedY = y;
         if (firstClick) {
             placeBombs(x, y);
             firstClick = false;
@@ -135,6 +140,9 @@ public class MinesweeperGame {
     }
     public int getWidth() { return width; }
     public int getHeight() { return height; }
+    public int getLastClickedX() { return lastClickedX; }
+    public int getLastClickedY() { return lastClickedY; }
+
 
     public boolean hasWon() {
         for (int y = 0; y < height; y++) {

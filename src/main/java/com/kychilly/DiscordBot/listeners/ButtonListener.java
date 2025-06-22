@@ -54,8 +54,16 @@ public class ButtonListener extends ListenerAdapter {
         // Process the move
         game.reveal(col, row);
 
+        boolean wasBomb = !game.reveal(col, row); // reveal() returns false if bomb
+
         // Handle game over state
         if (game.isGameOver() || game.hasWon()) {
+            String resultMessage;
+            if (wasBomb) {
+                resultMessage = "💥 BOOM! You clicked a bomb at (" + (col+1) + "," + (row+1) + ")!";
+            } else {
+                resultMessage = "🎉 You won! 🎉";
+            }
             handleGameEnd(event, game, userId);
         } else {
             // Update the game board
@@ -64,21 +72,72 @@ public class ButtonListener extends ListenerAdapter {
     }
 
     private void handleGameEnd(ButtonInteractionEvent event, MinesweeperGame game, String userId) {
-        String resultMessage = game.hasWon() ? "🎉 You won! 🎉" : "💥 BOOM! You hit a bomb! 💥";
+        // Get the last clicked position from the game
+        int clickedCol = game.getLastClickedX();
+        int clickedRow = game.getLastClickedY();
 
-        // Create final board display
-        MessageEmbed finalEmbed = createBoardEmbed(game, game.hasWon());
-        List<ActionRow> finalButtons = createDisabledButtons(game);
+        // Create appropriate message
+        String resultMessage = game.hasWon()
+                ? "🎉 You won! 🎉"
+                : "💥 BOOM! You clicked a bomb!";
 
-        // Send result and update board
-        event.reply(resultMessage).queue(response -> {
-            event.getHook().editOriginalEmbeds(finalEmbed)
-                    .setComponents(finalButtons)
-                    .queue();
-        });
+        // Create final board with explosion marker
+        MessageEmbed finalEmbed = createFinalBoardEmbed(game, clickedCol, clickedRow);
+        List<ActionRow> finalButtons = createFinalButtons(game, clickedCol, clickedRow);
+
+        // Send result (ephemeral) and update board
+        event.reply(resultMessage)
+                .setEphemeral(false)
+                .queue(response -> {
+                    event.getHook().editOriginalEmbeds(finalEmbed)
+                            .setComponents(finalButtons)
+                            .queue();
+                });
 
         // Clean up the game
         MinesweeperCommand.endGame(userId);
+    }
+
+    private MessageEmbed createFinalBoardEmbed(MinesweeperGame game, int bombCol, int bombRow) {
+        EmbedBuilder embed = new EmbedBuilder()
+                .setTitle("Minesweeper (" + game.getWidth() + "×" + game.getHeight() + ")")
+                .setColor(game.hasWon() ? 0x00FF00 : 0xFF0000);
+
+        String[][] board = game.getVisibleBoard();
+        for (int y = 0; y < board.length; y++) {
+            StringBuilder rowText = new StringBuilder();
+            for (int x = 0; x < board[y].length; x++) {
+                // Mark the clicked bomb with explosion
+                if (!game.hasWon() && x == bombCol && y == bombRow && board[y][x].equals("💣")) {
+                    rowText.append("💥");
+                } else {
+                    rowText.append(board[y][x]);
+                }
+            }
+            embed.addField("", rowText.toString(), false);
+        }
+        return embed.build();
+    }
+
+    private List<ActionRow> createFinalButtons(MinesweeperGame game, int bombCol, int bombRow) {
+        List<Button> buttons = new ArrayList<>();
+        String[][] board = game.getVisibleBoard();
+
+        for (int y = 0; y < board.length; y++) {
+            for (int x = 0; x < board[y].length; x++) {
+                String id = "minesweeper:" + y + ":" + x;
+                String display = board[y][x];
+
+                // Mark the clicked bomb with explosion
+                if (!game.hasWon() && x == bombCol && y == bombRow && display.equals("💣")) {
+                    display = "💥";
+                }
+
+                buttons.add(Button.secondary(id, display).asDisabled());
+            }
+        }
+
+        return splitIntoActionRows(buttons);
     }
 
     private void updateGameBoard(ButtonInteractionEvent event, MinesweeperGame game) {
