@@ -78,14 +78,14 @@ public class ButtonListener extends ListenerAdapter {
 
         // Create appropriate message
         String resultMessage = game.hasWon()
-                ? "🎉 You won! 🎉"
-                : "💥 BOOM! You clicked a bomb!";
+                ? "🎉 You won! You are now a bomb master!!! 🎉"
+                : "💥 BOOM! You clicked a bomb! Better luck next time!";
 
         // Create final board with explosion marker
         MessageEmbed finalEmbed = createFinalBoardEmbed(game, clickedCol, clickedRow);
         List<ActionRow> finalButtons = createFinalButtons(game, clickedCol, clickedRow);
 
-        // Send result (ephemeral) and update board
+        //send result in a reply
         event.reply(resultMessage)
                 .setEphemeral(false)
                 .queue(response -> {
