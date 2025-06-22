@@ -70,6 +70,8 @@ public class CommandManager extends ListenerAdapter {
             ChangeNicknameCommand.execute(event);
         } else if (command.equals("channel")) {
             TextChannelCommand.execute(event);
+        } else if (command.equals("minesweeper")) {
+            MinesweeperCommand.execute(event);
         }
     }
 
@@ -98,6 +100,7 @@ public class CommandManager extends ListenerAdapter {
                 .addOption(OptionType.STRING, "word", "Your 5-letter guess", true));
 
         commandData.add(Commands.slash("typeracer", "Play typeracer!!"));
+        commandData.add(MinesweeperCommand.getCommandData());
 
         //kyche commands
         commandData.add(Commands.slash("kyche", "kyche's intro :D"));
@@ -119,6 +122,8 @@ public class CommandManager extends ListenerAdapter {
                 );
 
     }
+
+
 
     //if want to have these commands on other guilds, do onGuildJoin, copy paste everything from onGuildReady here
 }

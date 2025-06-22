@@ -13,8 +13,13 @@ import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import com.kychilly.DiscordBot.classes.MinesweeperGame;
+import com.kychilly.DiscordBot.classes.MinesweeperGameHandler;
 
 import javax.security.auth.login.LoginException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class KychillyBot {
 
@@ -39,7 +44,7 @@ public class KychillyBot {
 
         shardManager = builder.build();
 
-
+    MinesweeperGameHandler minesweeperGameHandler = new MinesweeperGameHandler();
 
         //register listeners
         shardManager.addEventListener(new PingCommands());
@@ -51,7 +56,7 @@ public class KychillyBot {
         shardManager.addEventListener(new TyperacerListener());
         shardManager.addEventListener(new ShutdownListener());
         //shardManager.addEventListener(new RuleCommandListener());
-
+        shardManager.addEventListener(new ButtonListener());
         //shardManager.addEventListener(new RussianRouletteListener());
     }
 
