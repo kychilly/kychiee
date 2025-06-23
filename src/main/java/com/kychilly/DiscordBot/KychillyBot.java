@@ -1,5 +1,7 @@
 package com.kychilly.DiscordBot;
 
+//new laptop
+
 import com.kychilly.DiscordBot.classes.ShutdownHandler;
 import com.kychilly.DiscordBot.commands.CommandManager;
 //import com.kychilly.DiscordBot.commands.ReminderCommand;
