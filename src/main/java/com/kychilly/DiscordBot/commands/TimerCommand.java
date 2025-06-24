@@ -44,7 +44,7 @@ public class TimerCommand {
             scheduler.scheduleAtFixedRate(() -> {
                 if (timeLeft[0] <= 0) {
                     scheduler.shutdown();
-                    reply.editOriginal(userMention + "YOUR TIME HAS COME TO AN END :index_pointing_at_the_viewer::robot:").queue();
+                    reply.editOriginal(userMention + " YOUR TIME HAS COME TO AN END :index_pointing_at_the_viewer::robot:").queue();
                 } else {
                     reply.editOriginal("⏳ Time remaining: " + formatTime(timeLeft[0]) + " / " + formatTime(initialTime) + "\nTarget: " + userMention).queue();
                     timeLeft[0]--;

@@ -157,7 +157,7 @@ public class PingCommands extends ListenerAdapter {
                         (privateChannel) -> {
 
                             privateChannel.sendMessage(dm).queue(
-                                    success -> System.out.println(""),//I think you have to put something here
+                                    success -> System.out.print(""),//I think you have to put something here, could be wrong though
                                     error -> System.err.println("Failed to send DM: " + error.getMessage())
                             );
                         },
