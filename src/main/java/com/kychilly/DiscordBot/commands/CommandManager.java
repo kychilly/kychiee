@@ -72,6 +72,8 @@ public class CommandManager extends ListenerAdapter {
             TextChannelCommand.execute(event);
         } else if (command.equals("minesweeper")) {
             MinesweeperCommand.execute(event);
+        } else if (command.equals("timer")) {
+            TimerCommand.execute(event);
         }
     }
 
@@ -86,6 +88,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("help", "Gives additional help"));
         commandData.add(PfpCommand.getCommandData());
         commandData.add(HandleReminderCommand.getCommandData());
+        commandData.add(TimerCommand.getCommandData());
 
         //moderation commands
         commandData.add(BanCommand.getCommandData());
