@@ -74,6 +74,8 @@ public class CommandManager extends ListenerAdapter {
             MinesweeperCommand.execute(event);
         } else if (command.equals("timer")) {
             TimerCommand.execute(event);
+        } else if (command.equals("roll")) {
+            RollCommand.execute(event);
         }
     }
 
@@ -89,6 +91,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(PfpCommand.getCommandData());
         commandData.add(HandleReminderCommand.getCommandData());
         commandData.add(TimerCommand.getCommandData());
+        commandData.add(RollCommand.getCommandData());
 
         //moderation commands
         commandData.add(BanCommand.getCommandData());

@@ -68,6 +68,9 @@ public class PingCommands extends ListenerAdapter {
         if (message.contains("cat") && event.getGuild().getId().equals("722009112921243678")) {
             meowCommand(event);
         }
+        if (message.equals("!status")) {
+            event.getChannel().sendMessage("ONLINE: \uD83D\uDFE2").queue();
+        }
 
     }
 
