@@ -68,7 +68,7 @@ public class PingCommands extends ListenerAdapter {
         if (message.toLowerCase().contains("cat") && event.getGuild().getId().equals("722009112921243678")) {
             meowCommand(event);
         }
-        if (message.toLowerCase().contains("meow") && event.getGuild().getId().equals("722009112921243678") || event.getAuthor().getId().equals("840216337119969301")) {
+        if (message.toLowerCase().contains("meow") && (event.getGuild().getId().equals("722009112921243678") || event.getAuthor().getId().equals("840216337119969301"))) {
             scatterCommand(event);
         }
         if (message.equals("!status")) {

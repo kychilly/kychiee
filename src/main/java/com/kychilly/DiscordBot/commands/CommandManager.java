@@ -76,6 +76,8 @@ public class CommandManager extends ListenerAdapter {
             TimerCommand.execute(event);
         } else if (command.equals("roll")) {
             RollCommand.execute(event);
+        } else if (command.equals("skibidi")) {
+            SkibidiCommand.execute(event);
         }
     }
 
@@ -88,6 +90,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("roles", "gets all roles on discord server"));
         commandData.add(Commands.slash("peashooter", "peashooter image"));
         commandData.add(Commands.slash("help", "Gives additional help"));
+        commandData.add(SkibidiCommand.getCommandData());
         commandData.add(PfpCommand.getCommandData());
         commandData.add(HandleReminderCommand.getCommandData());
         commandData.add(TimerCommand.getCommandData());
