@@ -51,7 +51,6 @@ public class KychillyBot {
         //register listeners
         shardManager.addEventListener(new PingCommands());
         //shardManager.addEventListener(new MemberJoin());
-        shardManager.addEventListener(new SlashCommands());
         shardManager.addEventListener(new CommandManager());
         shardManager.addEventListener(new Typeracer());
         shardManager.addEventListener(new TimerCommand());

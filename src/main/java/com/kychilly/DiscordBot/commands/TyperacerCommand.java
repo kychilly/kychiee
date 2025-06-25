@@ -18,7 +18,7 @@ public class TyperacerCommand {
         try {
             TyperacerPlayer game = new TyperacerPlayer(event);
             activeGames.put(channelId, game);
-            event.reply("Starting TypeRacer game...").queue();
+            event.reply("Typeracer game starting in 5 seconds!!!").queue();
         } catch (Exception e) {
             event.reply("Failed to start game: " + e.getMessage()).setEphemeral(true).queue();
         }

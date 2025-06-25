@@ -31,23 +31,21 @@ public class TyperacerPlayer {
         this.channel = event.getChannel();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        // Countdown message
-        channel.sendMessage("TypeRacer starting in 5 seconds! Get ready!")
-                .queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
 
         // Schedule race start
         scheduler.schedule(() -> {
             this.startTime = System.currentTimeMillis();
-            channel.sendMessage("🏁 **Typeracer Starting!** Type the following 20 words exactly:\n```" + raceText + "```").queue();
+            channel.sendMessage("🏁 **Typeracer Starting!** Type the following 20 words exactly:\n```" + raceText + "```")
+                    .queue(startMessage -> {
+                        // Schedule timeout as a reply to the race start message
+                        scheduler.schedule(() -> {
+                            if (TyperacerCommand.getActiveGames().containsKey(channelId)) {
+                                startMessage.reply("⌛ Time's up! The race has ended.").queue();
+                                TyperacerCommand.endGame(channelId);
+                            }
+                        }, 60, TimeUnit.SECONDS);
+                    });
         }, 5, TimeUnit.SECONDS);
-
-        // Schedule timeout
-        scheduler.schedule(() -> {
-            if (TyperacerCommand.getActiveGames().containsKey(channelId)) {
-                channel.sendMessage("⌛ Time's up! The race has ended.").queue();
-                TyperacerCommand.endGame(channelId);
-            }
-        }, 65, TimeUnit.SECONDS);
     }
 
     public ArrayList<String> decodeJSON(String filePath) {
@@ -58,8 +56,7 @@ public class TyperacerPlayer {
                 Objects.requireNonNull(WordBomb.class.getClassLoader().getResourceAsStream("com/github/KychillyBot/typeracer/" + filePath + ".json")))) {
             return gson.fromJson(reader, listType);
         } catch (Exception ignored) {
-
-            System.out.println("Error decoding JSON at " + filePath);
+            System.out.println("Error decoding JSON at " + filePath + ". PLEASE SEND HELP");
         }
         throw new RuntimeException(filePath + " invalid path");
     }
