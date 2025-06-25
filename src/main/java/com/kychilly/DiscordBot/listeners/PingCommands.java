@@ -65,8 +65,11 @@ public class PingCommands extends ListenerAdapter {
         if (message.equals("send skibidi")) {
             skibidiEliezer(event);
         }
-        if (message.contains("cat") && event.getGuild().getId().equals("722009112921243678")) {
+        if (message.toLowerCase().contains("cat") && event.getGuild().getId().equals("722009112921243678")) {
             meowCommand(event);
+        }
+        if (message.toLowerCase().contains("meow") && event.getGuild().getId().equals("722009112921243678") || event.getAuthor().getId().equals("840216337119969301")) {
+            scatterCommand(event);
         }
         if (message.equals("!status")) {
             event.getChannel().sendMessage("ONLINE: \uD83D\uDFE2").queue();
@@ -156,6 +159,35 @@ public class PingCommands extends ListenerAdapter {
             try {
                 event.getChannel().sendMessage(meow).queue();
                 String dm = meow;
+                event.getAuthor().openPrivateChannel().queue(
+                        (privateChannel) -> {
+
+                            privateChannel.sendMessage(dm).queue(
+                                    success -> System.out.print(""),//I think you have to put something here, could be wrong though
+                                    error -> System.err.println("Failed to send DM: " + error.getMessage())
+                            );
+                        },
+                        error -> System.err.println("Could not open private channel: " + error.getMessage())
+                );
+                Thread.sleep(400);
+            } catch (Exception e) {
+                System.out.println("HELP ME");
+            }
+
+        }
+    }
+
+    public void scatterCommand(MessageReceivedEvent event) {
+        for (int i = 0; i < Math.random()*7 + 3; i++) {
+            String scatter = "";
+            for (int p = 0; p < Math.random()*18 + 3; p++) {
+                double r = Math.random();
+                scatter += r < .25 ? "scatter " : r < .5 ? "cat " : r < .75 ? "<:emily:1327147566311407679> " : "<:catshock:1195267535944294421> ";
+
+            }
+            try {
+                event.getChannel().sendMessage(scatter).queue();
+                String dm = scatter;
                 event.getAuthor().openPrivateChannel().queue(
                         (privateChannel) -> {
 
