@@ -80,6 +80,8 @@ public class CommandManager extends ListenerAdapter {
             SkibidiCommand.execute(event);
         } else if (command.equals("selfpromo")) {
             SelfPromoCommand.execute(event);
+        } else if (command.equals("sigma_roulette")) {
+            RouletteCommand.execute(event);
         }
     }
 
@@ -113,6 +115,7 @@ public class CommandManager extends ListenerAdapter {
 
         commandData.add(Commands.slash("typeracer", "Play typeracer!!"));
         commandData.add(MinesweeperCommand.getCommandData());
+        commandData.add(RouletteCommand.getCommandData());
 
         //kyche commands
         commandData.add(Commands.slash("kyche", "kyche's intro :D"));
