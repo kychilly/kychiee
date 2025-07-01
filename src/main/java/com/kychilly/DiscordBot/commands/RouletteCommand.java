@@ -14,8 +14,8 @@ import java.util.Random;
 
 public class RouletteCommand {
 
-    // Maps userId to bullet position (0-5)
-    private static final HashMap<String, Integer> chambers = new HashMap<>();
+    // Maps userId to chamber array (6 boolean chambers)
+    private static final HashMap<String, boolean[]> chambers = new HashMap<>();
 
     // Maps userId to survive count
     private static final HashMap<String, Integer> surviveCount = new HashMap<>();
@@ -26,18 +26,44 @@ public class RouletteCommand {
         return Commands.slash("sigma_roulette", "Play Sigma Roulette!");
     }
 
+    // Initialize chambers array with one bullet randomly placed
+    private static boolean[] newChamber() {
+        boolean[] chamber = new boolean[6];
+        int bulletPos = random.nextInt(6);
+        chamber[bulletPos] = true;
+        return chamber;
+    }
+
+    // Spin resets chambers with bullet in random spot
+    private static void spinChamber(String userId, User user) {
+        boolean[] chamber = newChamber();
+        chambers.put(userId, chamber);
+
+        // Call the logger here
+        printChamber(user, chamber);
+    }
+
+    // Shift chambers: remove chamber[0], shift left, append removed chamber to end
+    private static void rotateChamber(String userId) {
+        boolean[] chamber = chambers.get(userId);
+        if (chamber == null) return;
+
+        boolean first = chamber[0];
+        System.arraycopy(chamber, 1, chamber, 0, chamber.length - 1);
+        chamber[chamber.length - 1] = first;
+    }
+
     public static void execute(SlashCommandInteractionEvent event) {
         String userId = event.getUser().getId();
 
-        int bulletPosition = random.nextInt(6);
-        chambers.put(userId, bulletPosition);
+        chambers.put(userId, newChamber());
         surviveCount.put(userId, 0);  // reset survive count when new game starts
 
         EmbedBuilder embed = new EmbedBuilder()
                 .setTitle("Sigma Roulette")
                 .setDescription(event.getUser().getAsMention() + ", you've loaded the revolver.\n\n**Rules:**\n" +
-                        "- If you get a **Chicken Jockey** when you fire, you're safe!\n" +
-                        "- If you get a **Skibidi Toilet**, you lose the game.\n" +
+                        "- If you get a **Chicken Jockey** <:chickenjockey:1389470392128639007> when you fire, you're safe!\n" +
+                        "- If you get a **Skibidi Toilet** <:SKIBIDITOILET:1389472754490671145> you lose.\n" +
                         "- You can spin the chamber or fire the revolver.\n" +
                         "Good luck!")
                 .setColor(Color.ORANGE);
@@ -65,7 +91,7 @@ public class RouletteCommand {
         }
 
         if (!event.getUser().getId().equals(userId)) {
-            event.reply("This is not your roulette game!").setEphemeral(true).queue();
+            event.reply("This is not your roulette game nerd!").setEphemeral(true).queue();
             return;
         }
 
@@ -73,10 +99,10 @@ public class RouletteCommand {
 
         switch (action) {
             case "spin" -> {
-                chambers.put(userId, random.nextInt(6));
+                spinChamber(userId, user);//also prints the chamber to me
 
                 EmbedBuilder embed = new EmbedBuilder()
-                        .setTitle("Sigma Roulette - Chamber Spun")
+                        .setTitle("<:chickenjockey:1389470392128639007> Sigma Roulette <:SKIBIDITOILET:1389472754490671145> - Chamber Spun")
                         .setDescription(user.getAsMention() + " spun the chamber. Good luck!")
                         .addField("Times survived", String.valueOf(currentSurvive), false)
                         .setColor(Color.CYAN);
@@ -89,56 +115,44 @@ public class RouletteCommand {
                         .queue();
             }
             case "fire" -> {
-                int chance = random.nextInt(6);
-                int bulletPosition = chambers.getOrDefault(userId, -1);
 
-                if (chance == bulletPosition) {
-                    // Randomize result between chicken jockey (safe) or skibidi toilet (lose)
-                    boolean safe = random.nextBoolean(); // 50% chance safe or lose
+                boolean[] chamber = chambers.get(userId);
 
-                    if (safe) {
-                        // Chicken jockey - safe, count as survived
-                        currentSurvive++;
-                        surviveCount.put(userId, currentSurvive);
+                if (chamber == null) {
+                    event.reply("Game not found! Start a new game with /sigma_roulette.").setEphemeral(true).queue();
+                    return;
+                }
 
-                        EmbedBuilder embed = new EmbedBuilder()
-                                .setTitle("🐥 Chicken Jockey! You're safe!")
-                                .setDescription(user.getAsMention() + " pulled the trigger and a Chicken Jockey saved them!")
-                                .addField("Times survived", String.valueOf(currentSurvive), false)
-                                .setColor(Color.GREEN);
+                boolean bulletAtZero = chamber[0];
 
-                        event.editMessageEmbeds(embed.build())
-                                .setActionRow(
-                                        Button.primary("roulette_fire_" + userId, "Fire"),
-                                        Button.secondary("roulette_spin_" + userId, "Spin")
-                                )
-                                .queue();
-                    } else {
-                        // Skibidi toilet - lose
-                        chambers.remove(userId);
-                        surviveCount.remove(userId);
 
-                        EmbedBuilder embed = new EmbedBuilder()
-                                .setTitle("🚽 SKIBIDI SIGMA Toilet! You lost!")
-                                .setDescription(user.getAsMention() + " pulled the trigger and got flushed down! Game over.")
-                                .addField("Total rounds survived", String.valueOf(currentSurvive), false)
-                                .setColor(Color.RED);
 
-                        event.editMessageEmbeds(embed.build())
-                                .setActionRow(
-                                        Button.primary("roulette_fire_" + userId, "Fire").asDisabled(),
-                                        Button.secondary("roulette_spin_" + userId, "Spin").asDisabled()
-                                )
-                                .queue();
-                    }
-                } else {
-                    // Not bullet chamber, survived normally
-                    currentSurvive++;
-                    surviveCount.put(userId, currentSurvive);
+                if (bulletAtZero) {
+                    // 💥 Bullet fired — you lose
+                    chambers.remove(userId);
+                    surviveCount.remove(userId);
 
                     EmbedBuilder embed = new EmbedBuilder()
-                            .setTitle("<:chickenjockey:1389470392128639007> CHICKEN JOCKEY!!!")
-                            .setDescription(user.getAsMention() + " pulled the trigger and survived.")
+                            .setTitle("<:SKIBIDITOILET:1389472754490671145> SKIBIDI SIGMA TOILET! You lost!")
+                            .setDescription(user.getAsMention() + " pulled the trigger and got flushed down! Game over.")
+                            .addField("Total rounds survived", String.valueOf(currentSurvive), false)
+                            .setColor(Color.RED);
+
+                    event.editMessageEmbeds(embed.build())
+                            .setActionRow(
+                                    Button.primary("roulette_fire_" + userId, "Fire").asDisabled(),
+                                    Button.secondary("roulette_spin_" + userId, "Spin").asDisabled()
+                            )
+                            .queue();
+                } else {
+                    // ✅ Safe — no bullet in chamber
+                    currentSurvive++;
+                    surviveCount.put(userId, currentSurvive);
+                    rotateChamber(userId);
+
+                    EmbedBuilder embed = new EmbedBuilder()
+                            .setTitle("<:chickenjockey:1389470392128639007> CHICKEN JOCKEY!!! You're safe!")
+                            .setDescription(user.getAsMention() + " pulled the trigger and out came a chicken jockey <:chickenjockey:1389470392128639007>. Safe!")
                             .addField("Times survived", String.valueOf(currentSurvive), false)
                             .setColor(Color.GREEN);
 
@@ -149,7 +163,16 @@ public class RouletteCommand {
                             )
                             .queue();
                 }
+                printChamber(user, chamber);
             }
         }
+    }
+    //tells position at the end of the round
+    public static void printChamber(User user, boolean[] chamber) {
+        System.out.print("Current chamber for " + user.getName() + ": [");
+        for (int i = 0; i < chamber.length; i++) {
+            System.out.print((chamber[i] ? "B" : "E") + (i < chamber.length - 1 ? ", " : ""));
+        }
+        System.out.println("]");
     }
 }
