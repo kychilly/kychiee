@@ -24,9 +24,13 @@ public class PingCommands extends ListenerAdapter {
         if (event.getAuthor().isBot()) {
             return;
         }
+        if (!event.getMessage().getAttachments().isEmpty()) {
+            return;
+        }
 
 
         String message = event.getMessage().getContentRaw();
+
 
         //the mass pinging
         if (message.charAt(0) == '!') {
