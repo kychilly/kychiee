@@ -139,13 +139,10 @@ public class RouletteCommand {
                             .setColor(Color.RED);
 
                     event.editMessageEmbeds(embed.build())
-//                            .setActionRow(
-//                                    Button.primary("roulette_flush_" + userId, "Flush").asDisabled(),
-//                                    Button.secondary("roulette_spin_" + userId, "Spin").asDisabled()
-//                            )
+                            .setComponents() //removes buttons after done I hope
                             .queue();
                 } else {
-                    // ✅ Safe — no bullet in chamber
+                    // ✅ Safe — you didnt get flushed
                     currentSurvive++;
                     surviveCount.put(userId, currentSurvive);
                     rotateChamber(userId);
