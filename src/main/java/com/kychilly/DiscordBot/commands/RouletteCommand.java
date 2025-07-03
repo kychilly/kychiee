@@ -61,16 +61,16 @@ public class RouletteCommand {
 
         EmbedBuilder embed = new EmbedBuilder()
                 .setTitle("Sigma Roulette")
-                .setDescription(event.getUser().getAsMention() + ", you've loaded the revolver.\n\n**Rules:**\n" +
-                        "- If you get a **Chicken Jockey** <:chickenjockey:1389470392128639007> when you fire, you're safe!\n" +
+                .setDescription(event.getUser().getAsMention() + ", you've loaded the toilet.\n\n**Rules:**\n" +
+                        "- If you get a **Chicken Jockey** <:chickenjockey:1389470392128639007> when you flush, you're safe!\n" +
                         "- If you get a **Skibidi Toilet** <:SKIBIDITOILET:1389472754490671145> you lose.\n" +
-                        "- You can spin the chamber or fire the revolver.\n" +
+                        "- You can choose to spin or flush the toilet.\n" +
                         "Good luck!")
                 .setColor(Color.ORANGE);
 
         event.replyEmbeds(embed.build())
                 .addActionRow(
-                        Button.primary("roulette_fire_" + userId, "Fire"),
+                        Button.primary("roulette_flush_" + userId, "Flush"),
                         Button.secondary("roulette_spin_" + userId, "Spin")
                 )
                 .queue();
@@ -91,7 +91,7 @@ public class RouletteCommand {
         }
 
         if (!event.getUser().getId().equals(userId)) {
-            event.reply("This is not your roulette game nerd!").setEphemeral(true).queue();
+            event.reply("This is not your sigma roulette game nerd!").setEphemeral(true).queue();
             return;
         }
 
@@ -102,19 +102,19 @@ public class RouletteCommand {
                 spinChamber(userId, user);//also prints the chamber to me
 
                 EmbedBuilder embed = new EmbedBuilder()
-                        .setTitle("<:chickenjockey:1389470392128639007> Sigma Roulette <:SKIBIDITOILET:1389472754490671145> - Chamber Spun")
-                        .setDescription(user.getAsMention() + " spun the chamber. Good luck!")
+                        .setTitle("<:chickenjockey:1389470392128639007> Sigma Roulette <:SKIBIDITOILET:1389472754490671145> - Toilet Spun")
+                        .setDescription(user.getAsMention() + " spun the toilet. Good luck!")
                         .addField("Times survived", String.valueOf(currentSurvive), false)
                         .setColor(Color.CYAN);
 
                 event.editMessageEmbeds(embed.build())
                         .setActionRow(
-                                Button.primary("roulette_fire_" + userId, "Fire"),
+                                Button.primary("roulette_flush_" + userId, "Flush"),
                                 Button.secondary("roulette_spin_" + userId, "Spin")
                         )
                         .queue();
             }
-            case "fire" -> {
+            case "flush" -> {
 
                 boolean[] chamber = chambers.get(userId);
 
@@ -134,15 +134,15 @@ public class RouletteCommand {
 
                     EmbedBuilder embed = new EmbedBuilder()
                             .setTitle("<:SKIBIDITOILET:1389472754490671145> SKIBIDI SIGMA TOILET! You lost!")
-                            .setDescription(user.getAsMention() + " pulled the trigger and got flushed down! Game over.")
+                            .setDescription(user.getAsMention() + " flushed the toilet and got flushed down! Game over.")
                             .addField("Total rounds survived", String.valueOf(currentSurvive), false)
                             .setColor(Color.RED);
 
                     event.editMessageEmbeds(embed.build())
-                            .setActionRow(
-                                    Button.primary("roulette_fire_" + userId, "Fire").asDisabled(),
-                                    Button.secondary("roulette_spin_" + userId, "Spin").asDisabled()
-                            )
+//                            .setActionRow(
+//                                    Button.primary("roulette_flush_" + userId, "Flush").asDisabled(),
+//                                    Button.secondary("roulette_spin_" + userId, "Spin").asDisabled()
+//                            )
                             .queue();
                 } else {
                     // ✅ Safe — no bullet in chamber
@@ -152,13 +152,13 @@ public class RouletteCommand {
 
                     EmbedBuilder embed = new EmbedBuilder()
                             .setTitle("<:chickenjockey:1389470392128639007> CHICKEN JOCKEY!!! You're safe!")
-                            .setDescription(user.getAsMention() + " pulled the trigger and out came a chicken jockey <:chickenjockey:1389470392128639007>. Safe!")
+                            .setDescription(user.getAsMention() + " flushed the toilet and and out came a chicken jockey <:chickenjockey:1389470392128639007>. Safe!")
                             .addField("Times survived", String.valueOf(currentSurvive), false)
                             .setColor(Color.GREEN);
 
                     event.editMessageEmbeds(embed.build())
                             .setActionRow(
-                                    Button.primary("roulette_fire_" + userId, "Fire"),
+                                    Button.primary("roulette_flush_" + userId, "Flush"),
                                     Button.secondary("roulette_spin_" + userId, "Spin")
                             )
                             .queue();
