@@ -70,6 +70,8 @@ public class CommandManager extends ListenerAdapter {
             ChangeNicknameCommand.execute(event);
         } else if (command.equals("channel")) {
             TextChannelCommand.execute(event);
+        } else if (command.equals("deletechannel")) {
+            DeleteChannelCommand.execute(event);
         } else if (command.equals("minesweeper")) {
             MinesweeperCommand.execute(event);
         } else if (command.equals("timer")) {
@@ -125,6 +127,7 @@ public class CommandManager extends ListenerAdapter {
         //bot commands
         commandData.add(ShutdownCommand.getCommandData());
         commandData.add(TextChannelCommand.getCommandData());
+        commandData.add(DeleteChannelCommand.getCommandData());
 
 
 

@@ -21,6 +21,11 @@ public class TextChannelCommand {
 
     //modified to not be chatgpt
     public static void execute(SlashCommandInteractionEvent event) {
+        if (event.getUser().getIdLong() != 840216337119969301L) {
+            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+                event.reply("You do not have perms lol").setEphemeral(true).queue();
+            }
+        }
         String channelName = event.getOption("name").getAsString() != null ? event.getOption("name").getAsString() : "New Channel";
         int channelIndex = event.getOption("channel_num").getAsInt();
         event.getGuild().createTextChannel(channelName)

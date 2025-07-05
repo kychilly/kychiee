@@ -21,7 +21,7 @@ public class SelfPromoCommand {
                 .setDescription("Please buy personal discord bot services :pray::pray::pray::pray::pray::pray:")
                 .setColor(Color.GREEN)
                 .addField("Contact \uD83D\uDDE3\uFE0F",
-                        "[jyam478@gmail.com](mailto:jyam478@gmail.com)  \n[thegrasslanders.com](https://thegrasslanders.com) \n [github.com/kychilly](https://github.com/kychilly)",
+                        "[jyam478@gmail.com](mailto:jyam478@gmail.com)  \n[customdiscordbots.com](https://customdiscordbots.com) \n [github.com/kychilly](https://github.com/kychilly)",
                         false)
                 .setFooter("PLEAEAAEAASSSESEEE I NEED MONEY");
         event.replyEmbeds(embed.build()).queue();
