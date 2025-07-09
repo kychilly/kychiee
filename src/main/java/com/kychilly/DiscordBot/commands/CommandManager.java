@@ -84,6 +84,8 @@ public class CommandManager extends ListenerAdapter {
             SelfPromoCommand.execute(event);
         } else if (command.equals("sigma_roulette")) {
             RouletteCommand.execute(event);
+        } else if (command.equals("creator")) {
+            event.reply("Discord: <@840216337119969301>\nWebsite: [customdiscordbots.com](https://customdiscordbots.com)").queue();
         }
     }
 
@@ -102,6 +104,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(HandleReminderCommand.getCommandData());
         commandData.add(TimerCommand.getCommandData());
         commandData.add(RollCommand.getCommandData());
+        commandData.add(Commands.slash("creator", "gets bot info"));
 
         //moderation commands
         commandData.add(BanCommand.getCommandData());
