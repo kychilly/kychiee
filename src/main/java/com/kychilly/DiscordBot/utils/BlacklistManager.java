@@ -33,6 +33,18 @@ public class BlacklistManager {
         }
     }
 
+    // For returning the list of blacklisted words
+    public static String getFormattedBlacklist(Guild guild) {
+        Set<String> blacklist = getBlacklist(guild);
+        if (blacklist.isEmpty()) {
+            return "There are no blacklisted words in this server.";
+        }
+
+        StringBuilder sb = new StringBuilder("**Blacklisted words in this server:**\n");
+        blacklist.forEach(word -> sb.append("• ").append(word).append("\n"));
+        return sb.toString();
+    }
+
     private static void saveBlacklists() {
         try (Writer writer = new FileWriter(FILE_PATH)) {
             gson.toJson(guildBlacklists, writer);

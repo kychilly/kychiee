@@ -88,6 +88,10 @@ public class CommandManager extends ListenerAdapter {
             event.reply("Discord: <@840216337119969301>\nWebsite: [customdiscordbots.com](https://customdiscordbots.com)").queue();
         } else if (command.equals("blacklist")) {
             BlacklistCommand.execute(event);
+        } else if (command.equals("removeblacklist")) {
+            RemoveBlacklistCommand.execute(event);
+        } else if (command.equals("viewblacklist")) {
+            ViewBlacklistCommand.execute(event);
         }
     }
 
@@ -114,6 +118,8 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(TimeoutCommand.getCommandData());
         commandData.add(ChangeNicknameCommand.getCommandData());
         commandData.add(BlacklistCommand.getCommandData());
+        commandData.add(RemoveBlacklistCommand.getCommandData());
+        commandData.add(ViewBlacklistCommand.getCommandData());
 
         //game commands
         commandData.add(WordBomb.getCommandData());
