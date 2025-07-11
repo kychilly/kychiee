@@ -58,6 +58,8 @@ public class KychillyBot {
         shardManager.addEventListener(new ButtonListener());
         shardManager.addEventListener(new RouletteButtonListener());
         shardManager.addEventListener(new BlacklistedWordsListener());
+        shardManager.addEventListener(new BotReadyListener());
+
     }
 
     public ShardManager getShardManager() {
