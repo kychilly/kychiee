@@ -153,7 +153,63 @@ public class CommandManager extends ListenerAdapter {
 
     }
 
+    @Override
+    public void onGuildJoin(@NotNull GuildJoinEvent event) {
+        List<CommandData> commandData = new ArrayList<>();
 
+        //filler commands
+        commandData.add(Commands.slash("welcome", "welcomes user"));
+        commandData.add(Commands.slash("roles", "gets all roles on discord server"));
+        commandData.add(Commands.slash("peashooter", "peashooter image"));
+        commandData.add(Commands.slash("help", "Gives additional help"));
+        commandData.add(SelfPromoCommand.getCommandData());
+        commandData.add(SkibidiCommand.getCommandData());
+        commandData.add(PfpCommand.getCommandData());
+        commandData.add(HandleReminderCommand.getCommandData());
+        commandData.add(TimerCommand.getCommandData());
+        commandData.add(RollCommand.getCommandData());
+        commandData.add(Commands.slash("creator", "gets bot info"));
+
+        //moderation commands
+        commandData.add(BanCommand.getCommandData());
+        commandData.add(KickCommand.getCommandData());
+        commandData.add(TimeoutCommand.getCommandData());
+        commandData.add(ChangeNicknameCommand.getCommandData());
+        commandData.add(BlacklistCommand.getCommandData());
+        commandData.add(RemoveBlacklistCommand.getCommandData());
+        commandData.add(ViewBlacklistCommand.getCommandData());
+
+        //game commands
+        commandData.add(WordBomb.getCommandData());
+        commandData.add(WordleCommand.getCommandData());
+        commandData.add(Commands.slash("guess", "Make a guess in your Wordle game")
+                .addOption(OptionType.STRING, "word", "Your 5-letter guess", true));
+
+        commandData.add(Commands.slash("typeracer", "Play typeracer!!"));
+        commandData.add(MinesweeperCommand.getCommandData());
+        commandData.add(RouletteCommand.getCommandData());
+
+        //kyche commands
+        commandData.add(Commands.slash("kyche", "kyche's intro :D"));
+        commandData.add(Commands.slash("kychegithub", "kyche's amazing github"));
+
+
+        //bot commands
+        commandData.add(ShutdownCommand.getCommandData());
+        commandData.add(TextChannelCommand.getCommandData());
+        commandData.add(DeleteChannelCommand.getCommandData());
+
+
+
+        //updates all commands in guilds
+        event.getGuild().updateCommands()
+                .addCommands(commandData)
+                .queue(
+                        success -> System.out.println("✅ New commands registered in " + event.getGuild().getName()),
+                        error -> System.err.println("❌ Failed in " + event.getGuild().getName() + ": " + error.getMessage())
+                );
+
+    }
 
     //if want to have these commands on other guilds, do onGuildJoin, copy paste everything from onGuildReady here
 }
