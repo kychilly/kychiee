@@ -34,13 +34,21 @@ public class RouletteCommand {
         return chamber;
     }
 
+    private static boolean[] initialChamber() {
+        boolean[] chamber = new boolean[6];
+        int bulletPos = random.nextInt(5)+1;
+        chamber[bulletPos] = true;
+        return chamber;
+    }
+
+
     // Spin resets chambers with bullet in random spot
     private static void spinChamber(String userId, User user) {
         boolean[] chamber = newChamber();
         chambers.put(userId, chamber);
 
-        // Call the logger here
-        printChamber(user, chamber);
+        // Call the logger here if you want
+        //printChamber(user, chamber);
     }
 
     // Shift chambers: remove chamber[0], shift left, append removed chamber to end
@@ -56,7 +64,7 @@ public class RouletteCommand {
     public static void execute(SlashCommandInteractionEvent event) {
         String userId = event.getUser().getId();
 
-        chambers.put(userId, newChamber());
+        chambers.put(userId, initialChamber());
         surviveCount.put(userId, 0);  // reset survive count when new game starts
 
         EmbedBuilder embed = new EmbedBuilder()
@@ -172,4 +180,5 @@ public class RouletteCommand {
         }
         System.out.println("]");
     }
+
 }
