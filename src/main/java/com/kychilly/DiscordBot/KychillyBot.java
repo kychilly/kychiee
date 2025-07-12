@@ -48,17 +48,19 @@ public class KychillyBot {
 
     MinesweeperGameHandler minesweeperGameHandler = new MinesweeperGameHandler();
 
-        //register listeners
-        shardManager.addEventListener(new PingCommands());
-        shardManager.addEventListener(new CommandManager());
-        shardManager.addEventListener(new Typeracer());
-        shardManager.addEventListener(new TimerCommand());
-        shardManager.addEventListener(new TyperacerListener());
-        shardManager.addEventListener(new ShutdownListener());
-        shardManager.addEventListener(new ButtonListener());
-        shardManager.addEventListener(new RouletteButtonListener());
-        shardManager.addEventListener(new BlacklistedWordsListener());
-        shardManager.addEventListener(new BotReadyListener());
+        // Register all listeners in one command
+        shardManager.addEventListener(
+                new PingCommands(),
+                new CommandManager(),
+                new Typeracer(),
+                new TimerCommand(),
+                new TyperacerListener(),
+                new ShutdownListener(),
+                new ButtonListener(),
+                new RouletteButtonListener(),
+                new BlacklistedWordsListener(),
+                new BotReadyListener()
+        );
 
     }
 
