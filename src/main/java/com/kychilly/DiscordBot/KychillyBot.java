@@ -59,7 +59,8 @@ public class KychillyBot {
                 new ButtonListener(),
                 new RouletteButtonListener(),
                 new BlacklistedWordsListener(),
-                new BotReadyListener()
+                new BotReadyListener(),
+                new AIListener()
         );
 
     }
