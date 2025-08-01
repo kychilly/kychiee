@@ -78,6 +78,10 @@ public class PingCommands extends ListenerAdapter {
         if (message.equals("!status")) {
             event.getChannel().sendMessage("ONLINE: \uD83D\uDFE2").queue();
         }
+        if (message.startsWith("!say")) {
+            event.getMessage().delete().queue();
+            event.getChannel().sendMessage(message.substring(4).trim()).queue();
+        }
         if (message.contains("repuesta")) {
             if (event.getGuild().getMemberById("1295872060341616640") != null) {
                 Member memberToMute = event.getGuild().getMemberById("1295872060341616640");
