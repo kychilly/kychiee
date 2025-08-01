@@ -78,7 +78,18 @@ public class PingCommands extends ListenerAdapter {
         if (message.equals("!status")) {
             event.getChannel().sendMessage("ONLINE: \uD83D\uDFE2").queue();
         }
-
+        if (message.contains("repuesta")) {
+            if (event.getGuild().getMemberById("1295872060341616640") != null) {
+                Member memberToMute = event.getGuild().getMemberById("1295872060341616640");
+                Duration timeoutDuration = Duration.ofSeconds(3);
+                event.getGuild()
+                        .timeoutFor(memberToMute, timeoutDuration)
+                        .queue(
+                                success -> event.getChannel().sendMessage(event.getGuild().getMemberById("739978476651544607").getAsMention() + " dame repuestas").queue(),
+                                error -> event.getChannel().sendMessage("Failed to mute: " + error.getMessage()).queue()
+                        );
+            }
+        }
     }
 
     public void massPingUser(MessageReceivedEvent event, String pinged) {

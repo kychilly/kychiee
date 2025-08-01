@@ -20,7 +20,7 @@ public class MuteCommand {
 
     public static void execute(SlashCommandInteractionEvent event) {
         if (!event.getMember().hasPermission(Permission.MODERATE_MEMBERS)) {
-            event.reply("You don't have permission to timeout members!").setEphemeral(true).queue();
+            event.reply("You don't have permission to mute members!").setEphemeral(true).queue();
             return;
         }
         OptionMapping targetOption = event.getOption("user");
