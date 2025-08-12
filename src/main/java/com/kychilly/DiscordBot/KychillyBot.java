@@ -1,27 +1,18 @@
 package com.kychilly.DiscordBot;
 
-//new laptop push test
-
-import com.kychilly.DiscordBot.classes.ShutdownHandler;
 import com.kychilly.DiscordBot.commands.CommandManager;
-//import com.kychilly.DiscordBot.commands.ReminderCommand;
 import com.kychilly.DiscordBot.listeners.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import com.kychilly.DiscordBot.classes.MinesweeperGame;
 import com.kychilly.DiscordBot.classes.MinesweeperGameHandler;
 
 import javax.security.auth.login.LoginException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class KychillyBot {
 
@@ -59,8 +50,8 @@ public class KychillyBot {
                 new ButtonListener(),
                 new RouletteButtonListener(),
                 new BlacklistedWordsListener(),
-                new BotReadyListener()
-                //new AIListener()
+                new BotReadyListener(),
+                new AIListener()
         );
 
     }

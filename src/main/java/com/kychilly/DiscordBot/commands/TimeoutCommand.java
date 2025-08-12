@@ -116,9 +116,9 @@ public class TimeoutCommand {
 
     private static String formatDuration(Duration duration) {
         long days = duration.toDays();
-        long hours = duration.toHoursPart();   // Uses Java 9+ toHoursPart()
-        long minutes = duration.toMinutesPart(); // Uses Java 9+ toMinutesPart()
-        long seconds = duration.toSecondsPart(); // Uses Java 9+ toSecondsPart()
+        long hours = duration.toHoursPart();
+        long minutes = duration.toMinutesPart();
+        long seconds = duration.toSecondsPart();
 
         if (days > 0) {
             return days + " day" + (days != 1 ? "s" : "");

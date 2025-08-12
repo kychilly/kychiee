@@ -4,6 +4,7 @@ import com.kychilly.DiscordBot.utils.BlacklistManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
@@ -26,7 +27,7 @@ public class RemoveBlacklistCommand {
         }
     }
 
-    public static net.dv8tion.jda.api.interactions.commands.build.CommandData getCommandData() {
+    public static CommandData getCommandData() {
         return Commands.slash("removeblacklist", "Remove a word from the server's blacklist")
                 .addOptions(
                         new OptionData(OptionType.STRING, "word", "The word to remove from blacklist", true)

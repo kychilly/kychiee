@@ -15,13 +15,6 @@ import java.util.List;
 
 public class PfpCommand {
 
-    // Command registration data
-    public static List<OptionData> getOptions() {
-        return Collections.singletonList(
-                new OptionData(OptionType.USER, "user", "The user whose pfp you want", false)
-        );
-    }
-
     public static CommandData getCommandData() {
         return (Commands.slash("pfp", "Get a user's profile picture")
                 .addOption(OptionType.USER, "user", "The user whose pfp you want", false));
