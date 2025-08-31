@@ -48,11 +48,31 @@ public class PingCommands extends ListenerAdapter {
 
             if (message.startsWith("!pinguser") && event.getAuthor().getIdLong() == 840216337119969301L) {//do not use this command for legal purposes
                 if (event.getAuthor().getIdLong() == 840216337119969301L) {
+                    int counter = 0;
+                    System.out.println("Message: " + message);
+
+                    // Stupid final variables and spagetthi
+                    String fakeMensaje = "";
+                    final String mensaje;
+
+                    for (int i = 0; i < message.length(); i++) {
+                        if (message.charAt(i) == ' ') {
+                            counter++;
+                        }
+                        if (counter == 2) {
+                            fakeMensaje = message.substring(i);
+                            break;
+                        }
+                    }
+
+                    // Now set mensaje equal to something
+                    mensaje = fakeMensaje;
+
                 if (!massiveRunning) {
                     String ping = findGuyToPing(event, message);
                     System.out.println(ping);
                     new Thread(() -> {
-                        massPingUser(event, ping + " dame repuestas");
+                        massPingUser(event, ping + mensaje);
                     }).start();
                 } else {
                     event.getChannel().sendMessage("Sorry! This command is already running. Please wait until it finishes to use it again.").queue();
