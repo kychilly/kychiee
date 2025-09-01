@@ -1,10 +1,13 @@
 package com.kychilly.DiscordBot;
 
-import com.kychilly.DiscordBot.commands.CommandManager;
+import com.kychilly.DiscordBot.commands.*;
 import com.kychilly.DiscordBot.listeners.*;
+import com.kychilly.DiscordBot.listeners.TimerCommand;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -13,6 +16,8 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import com.kychilly.DiscordBot.classes.MinesweeperGameHandler;
 
 import javax.security.auth.login.LoginException;
+
+import static com.kychilly.DiscordBot.commands.CommandManager.commandData;
 
 public class KychillyBot {
 
@@ -54,6 +59,8 @@ public class KychillyBot {
                 new AIListener()
         );
 
+        CommandManager.initializeCommands();
+
     }
 
     public ShardManager getShardManager() {
@@ -76,4 +83,6 @@ public class KychillyBot {
 
 
     }
+
+
 }

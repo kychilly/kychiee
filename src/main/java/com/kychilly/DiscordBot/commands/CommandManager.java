@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 public class CommandManager extends ListenerAdapter {
 
+    public static List<CommandData> commandData = new ArrayList<>();
+
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         String command = event.getName();
@@ -83,12 +85,12 @@ public class CommandManager extends ListenerAdapter {
             ViewBlacklistCommand.execute(event);
         } else if (command.equals("commands")) {
             CommandsListCommand.execute(event);
+        } else if (command.equals("send-message")) {
+            TextChannelSendMessageCommand.execute(event);
         }
     }
 
-    @Override
-    public void onGuildReady(@NotNull GuildReadyEvent event) {
-        List<CommandData> commandData = new ArrayList<>();
+    public static void initializeCommands() {
 
         //filler commands
         commandData.add(Commands.slash("roles", "gets all roles on discord server"));
@@ -96,7 +98,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(SkibidiCommand.getCommandData());
         commandData.add(PfpCommand.getCommandData());
         commandData.add(HandleReminderCommand.getCommandData());
-        commandData.add(TimerCommand.getCommandData());
+        commandData.add(com.kychilly.DiscordBot.commands.TimerCommand.getCommandData());
         commandData.add(RollCommand.getCommandData());
         commandData.add(Commands.slash("creator", "gets bot info"));
         commandData.add(Commands.slash("commands", "Gets a list of all possible commands"));
@@ -125,6 +127,11 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(ShutdownCommand.getCommandData());
         commandData.add(TextChannelCommand.getCommandData());
         commandData.add(DeleteChannelCommand.getCommandData());
+        commandData.add(TextChannelSendMessageCommand.getCommandData());
+    }
+
+    @Override
+    public void onGuildReady(@NotNull GuildReadyEvent event) {
 
 
 
@@ -140,44 +147,6 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
-        List<CommandData> commandData = new ArrayList<>();
-
-        //filler commands
-        commandData.add(Commands.slash("roles", "gets all roles on discord server"));
-        commandData.add(SelfPromoCommand.getCommandData());
-        commandData.add(SkibidiCommand.getCommandData());
-        commandData.add(PfpCommand.getCommandData());
-        commandData.add(HandleReminderCommand.getCommandData());
-        commandData.add(TimerCommand.getCommandData());
-        commandData.add(RollCommand.getCommandData());
-        commandData.add(Commands.slash("creator", "gets bot info"));
-        commandData.add(Commands.slash("commands", "Gets a list of all possible commands"));
-
-        //moderation commands
-        commandData.add(BanCommand.getCommandData());
-        commandData.add(KickCommand.getCommandData());
-        commandData.add(TimeoutCommand.getCommandData());
-        commandData.add(ChangeNicknameCommand.getCommandData());
-        commandData.add(BlacklistCommand.getCommandData());
-        commandData.add(RemoveBlacklistCommand.getCommandData());
-        commandData.add(ViewBlacklistCommand.getCommandData());
-
-        //game commands
-        commandData.add(WordBomb.getCommandData());
-        commandData.add(WordleCommand.getCommandData());
-        commandData.add(Commands.slash("guess", "Make a guess in your Wordle game")
-                .addOption(OptionType.STRING, "word", "Your 5-letter guess", true));
-
-        commandData.add(Commands.slash("typeracer", "Play typeracer!!"));
-        commandData.add(MinesweeperCommand.getCommandData());
-        commandData.add(RouletteCommand.getCommandData());
-
-        //bot commands
-        commandData.add(ShutdownCommand.getCommandData());
-        commandData.add(TextChannelCommand.getCommandData());
-        commandData.add(DeleteChannelCommand.getCommandData());
-
-
 
         //updates all commands in guilds
         event.getGuild().updateCommands()
