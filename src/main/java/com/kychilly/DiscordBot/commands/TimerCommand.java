@@ -1,5 +1,6 @@
 package com.kychilly.DiscordBot.commands;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -35,18 +36,32 @@ public class TimerCommand {
                 ? event.getOption("user").getAsUser().getAsMention()
                 : event.getUser().getAsMention();
 
-        event.reply("⏳ Timer set for " + formatTime(seconds) + "\nTarget: " + userMention).queue(reply -> {
+        EmbedBuilder embed = new EmbedBuilder()
+                .setTitle("SUPER COOL TIMER ACTIVATED!!!")
+                .setThumbnail("https://media.discordapp.net/attachments/1186115783013711894/1419106737989877931/Z.png?ex=68d08da4&is=68cf3c24&hm=d1239e82ac023122d5c0f3fadbe4bc45d479424f716fba6bd3b7cd0c46abe903&=&format=webp&quality=lossless&width=126&height=224")
+                .setFooter("Your dont come")
+                .setDescription("⏳ Timer set for " + formatTime(seconds) + "\nTarget: " + userMention);
+
+
+        event.replyEmbeds(embed.build()).queue(replyEmbed -> {
             final int[] timeLeft = {seconds};
             int initialTime = timeLeft[0];
 
             ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
+            EmbedBuilder noobEmbed = new EmbedBuilder()
+                    .setTitle("SUPER COOL TIMER ACTIVATED!!!")
+                    .setFooter("Your dont come")
+                    .setThumbnail("https://media.discordapp.net/attachments/1186115783013711894/1419106737989877931/Z.png?ex=68d08da4&is=68cf3c24&hm=d1239e82ac023122d5c0f3fadbe4bc45d479424f716fba6bd3b7cd0c46abe903&=&format=webp&quality=lossless&width=126&height=224");
+
             scheduler.scheduleAtFixedRate(() -> {
-                if (timeLeft[0] <= 0) {
+                if (timeLeft[0] < 0) { // To make the time actually say 0s before pinging
                     scheduler.shutdown();
-                    reply.editOriginal(userMention + " YOUR TIME HAS COME TO AN END :index_pointing_at_the_viewer::robot:").queue();
+                    event.getHook().sendMessage(userMention + " YOUR TIME HAS COME TO AN END :index_pointing_at_the_viewer::robot:").queue();
+                    //replyEmbed.editOriginal(userMention + " YOUR TIME HAS COME TO AN END :index_pointing_at_the_viewer::robot:").queue();
                 } else {
-                    reply.editOriginal("⏳ Time remaining: " + formatTime(timeLeft[0]) + " / " + formatTime(initialTime) + "\nTarget: " + userMention).queue();
+                    noobEmbed.setDescription("⏳ Time remaining: " + formatTime(timeLeft[0]) + " / " + formatTime(initialTime) + "\nTarget: " + userMention);
+                    replyEmbed.editOriginalEmbeds(noobEmbed.build()).queue();
                     timeLeft[0]--;
                 }
             }, 0, 1, TimeUnit.SECONDS);
