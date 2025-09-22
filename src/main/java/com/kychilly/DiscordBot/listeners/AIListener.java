@@ -54,7 +54,7 @@ public class AIListener extends ListenerAdapter {
 
         String prompt = content.substring(5);
         MessageChannel channel = event.getChannel();
-
+        event.getChannel().sendTyping(); // Honestly no idea if this thing works here
         new Thread(() -> {
             try {
                 String reply = getGroqReply(prompt);
@@ -75,7 +75,7 @@ public class AIListener extends ListenerAdapter {
         messages.add(userMessage);
 
         JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("model", "llama3-70b-8192");
+        requestBody.addProperty("model", "llama-3.3-70b-versatile");
         requestBody.add("messages", messages);
 
         RequestBody body = RequestBody.create(requestBody.toString(), JSON);
