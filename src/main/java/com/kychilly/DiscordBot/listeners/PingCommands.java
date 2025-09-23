@@ -102,6 +102,10 @@ public class PingCommands extends ListenerAdapter {
             event.getMessage().delete().queue();
             event.getChannel().sendMessage(message.substring(4).trim()).queue();
         }
+
+        if (message.contains("repuesta")) {
+            Z_RepuestaChecker.RepuestaCommand(event);
+        }
     }
 
     public void massPingUser(MessageReceivedEvent event, String pinged) {
@@ -110,14 +114,13 @@ public class PingCommands extends ListenerAdapter {
             return;
         }
         massiveRunning = true;
-        int delayTimer = 25;
         int totalTextChannels = event.getGuild().getTextChannels().size();
         for (int p = 0; p < 420; p++) {
-            for (int i = 3; i < totalTextChannels-1; i++) {
+            for (int i = 4; i < totalTextChannels-1; i++) {
                 try {
                     if (!PLEASESTOP) {
                         event.getGuild().getTextChannels().get(i).sendMessage(pinged).queue();
-                        Thread.sleep(delayTimer);
+                        Thread.sleep(25);
                     } else {
                         event.getChannel().sendMessage("Stopping !pinguser command").queue();
                         massiveRunning = false;
