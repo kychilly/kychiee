@@ -107,6 +107,7 @@ public class WordBombButtonListener extends ListenerAdapter {
                 break;
 
             default:
+                System.out.println("Button pressed that isnt word bomb. Don't worry about this exception");
                 throw new RuntimeException();
         }
     }

@@ -87,6 +87,8 @@ public class CommandManager extends ListenerAdapter {
             CommandsListCommand.execute(event);
         } else if (command.equals("send-message")) {
             TextChannelSendMessageCommand.execute(event);
+        } else if (command.equals("ping-user")) {
+            Z_PingingUserCommand.execute(event);
         }
     }
 
@@ -102,6 +104,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(RollCommand.getCommandData());
         commandData.add(Commands.slash("creator", "gets bot info"));
         commandData.add(Commands.slash("commands", "Gets a list of all possible commands"));
+        commandData.add(Z_PingingUserCommand.getCommandData());
 
         //moderation commands
         commandData.add(BanCommand.getCommandData());
