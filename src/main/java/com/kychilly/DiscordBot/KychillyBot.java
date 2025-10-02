@@ -17,14 +17,10 @@ import com.kychilly.DiscordBot.classes.MinesweeperGameHandler;
 
 import javax.security.auth.login.LoginException;
 
-import static com.kychilly.DiscordBot.commands.CommandManager.commandData;
-
 public class KychillyBot {
 
     private final ShardManager shardManager;
     private final Dotenv config;
-
-    private static final String CHANNEL_ID = "1186115783013711894";
 
 
     public KychillyBot() throws LoginException {
@@ -42,7 +38,7 @@ public class KychillyBot {
 
         shardManager = builder.build();
 
-    MinesweeperGameHandler minesweeperGameHandler = new MinesweeperGameHandler();
+    new MinesweeperGameHandler(); // Initializes the minesweeper command
 
         // Register all listeners in one command
         shardManager.addEventListener(
