@@ -53,7 +53,8 @@ public class KychillyBot {
                 new BlacklistedWordsListener(),
                 new BotReadyListener(),
                 new Z_RepuestaChecker(),
-                new AIListener()
+                new AIListener(),
+                new MathListener()
         );
 
         CommandManager.initializeCommands();
