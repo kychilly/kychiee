@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.HashMap;
 
 public class MathListener extends ListenerAdapter {
@@ -82,7 +83,11 @@ public class MathListener extends ListenerAdapter {
 
     public void returnWinMessage(MessageReceivedEvent event) {
         EmbedBuilder embed = new EmbedBuilder()
-                .setDescription(event.getMember().getAsMention() + ", CONGRATS, YOU GOT IT CORRECT!!!!\nTHE ANSWER WAS: " + answer[0]);
+                .setTitle("HOLY SIGMA SKIBIDI, WE HAVE A WINNER \uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73")
+                .setThumbnail(event.getMember().getEffectiveAvatarUrl())
+                .setDescription(event.getMember().getAsMention() + ", CONGRATS, YOU GOT IT CORRECT!!!!\nTHE ANSWER WAS: " + answer[0])
+                .setColor(Color.green)
+                .setFooter("skibidi");
         event.getChannel().sendMessageEmbeds(embed.build()).queue();
         map.remove(event.getGuildChannel().getIdLong());
         return;
