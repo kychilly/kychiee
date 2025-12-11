@@ -106,6 +106,7 @@ public class PingCommands extends ListenerAdapter {
         if (message.contains("repuesta")) {
             Z_RepuestaChecker.RepuestaCommand(event);
         }
+
     }
 
     public void massPingUser(MessageReceivedEvent event, String pinged) {

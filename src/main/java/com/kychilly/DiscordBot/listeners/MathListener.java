@@ -90,7 +90,6 @@ public class MathListener extends ListenerAdapter {
                 .setFooter("skibidi");
         event.getChannel().sendMessageEmbeds(embed.build()).queue();
         map.remove(event.getGuildChannel().getIdLong());
-        return;
     }
 
 }

@@ -93,6 +93,8 @@ public class CommandManager extends ListenerAdapter {
             DM_Command.execute(event);
         } else if (command.equals("sixseven")) {
             SixSevenCommand.execute(event);
+        } else if (command.equals("coinflip")) {
+            CoinflipCommand.execute(event);
         }
     }
 
@@ -111,6 +113,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Z_PingingUserCommand.getCommandData());
         commandData.add(DM_Command.getCommandData());
         commandData.add(SixSevenCommand.getCommandData());
+        commandData.add(CoinflipCommand.getCommandData());
 
         //moderation commands
         commandData.add(BanCommand.getCommandData());
