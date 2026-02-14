@@ -95,6 +95,10 @@ public class CommandManager extends ListenerAdapter {
             SixSevenCommand.execute(event);
         } else if (command.equals("coinflip")) {
             CoinflipCommand.execute(event);
+        } else if (command.equals("addusers")) {
+            UsersCommand.execute(event);
+        } else if (command.equals("showusers")) {
+            UsersShowCommand.showUsers(event);
         }
     }
 
@@ -114,6 +118,8 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(DM_Command.getCommandData());
         commandData.add(SixSevenCommand.getCommandData());
         commandData.add(CoinflipCommand.getCommandData());
+        commandData.add(UsersCommand.getCommandData());
+        commandData.add(UsersShowCommand.getCommandData());
 
         //moderation commands
         commandData.add(BanCommand.getCommandData());
