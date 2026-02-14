@@ -22,19 +22,29 @@ public class UsersManager {
     }
 
     private static void loadUsers() {
-        try (Reader reader = new FileReader(FILE_PATH)) {
-            Type type = new TypeToken<Map<Long, Set<Long>>>(){}.getType();
-            guildUsers = gson.fromJson(reader, type);
-            if (guildUsers == null) {
+        try {
+            File file = new File(FILE_PATH);
+
+            if (!file.exists()) {
                 guildUsers = new HashMap<>();
+                return;
             }
-        } catch (IOException e) {
-            System.out.println("No existing users file found, creating new one.");
+
+            try (Reader reader = new FileReader(file)) {
+                Type type = new TypeToken<Map<Long, Set<Long>>>() {}.getType();
+                Map<Long, Set<Long>> loaded = gson.fromJson(reader, type);
+
+                guildUsers = (loaded != null) ? loaded : new HashMap<>();
+            }
+
+        } catch (Exception e) {  // catch EVERYTHING
+            System.out.println("Users file invalid. Resetting.");
             guildUsers = new HashMap<>();
         }
     }
 
-    private static void saveUsers() {
+
+    public static void saveUsers() {
         try (Writer writer = new FileWriter(FILE_PATH)) {
             gson.toJson(guildUsers, writer);
         } catch (IOException e) {
@@ -44,6 +54,10 @@ public class UsersManager {
 
     public static Set<Long> getUserList(Guild guild) {
         return guildUsers.computeIfAbsent(guild.getIdLong(), k -> new HashSet<>());
+    }
+
+    public static int getUserAmount(Guild guild) {
+        return UsersManager.getUserList(guild).size();
     }
 
     public static void addUser(Guild guild, long user) {

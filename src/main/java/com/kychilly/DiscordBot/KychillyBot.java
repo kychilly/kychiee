@@ -3,6 +3,7 @@ package com.kychilly.DiscordBot;
 import com.kychilly.DiscordBot.commands.*;
 import com.kychilly.DiscordBot.listeners.*;
 import com.kychilly.DiscordBot.listeners.TimerCommand;
+import com.kychilly.DiscordBot.utils.UsersManager;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -35,7 +36,6 @@ public class KychillyBot {
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setChunkingFilter(ChunkingFilter.ALL);
 
-
         shardManager = builder.build();
 
     new MinesweeperGameHandler(); // Initializes the minesweeper command
@@ -54,6 +54,7 @@ public class KychillyBot {
                 new BotReadyListener(),
                 new Z_RepuestaChecker(),
                 new AIListener(),
+                //new Z_UserCount(),
                 new MathListener()
         );
 

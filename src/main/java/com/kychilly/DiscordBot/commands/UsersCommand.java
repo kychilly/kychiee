@@ -3,16 +3,13 @@ package com.kychilly.DiscordBot.commands;
 import com.kychilly.DiscordBot.utils.UsersManager;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class UsersCommand {
@@ -21,37 +18,58 @@ public class UsersCommand {
 
     public static CommandData getCommandData() {
         return Commands.slash("addusers", "adds users to databook")
-                .addOption(OptionType.INTEGER, "users", "amount of users to add(each iteration is about 450 users)", true);
+                .addOption(OptionType.INTEGER, "users", "amount of users to add", true);
     }
 
 
 
     public static void execute(SlashCommandInteractionEvent event) {
+
         if (Objects.requireNonNull(event.getMember()).getIdLong() != 840216337119969301L) {
             event.reply("lol sorry you are not kyche").setEphemeral(true).queue();
             return;
         }
 
-        int times = event.getOption("users").getAsInt();
+        event.deferReply().queue(); // Prevent timeout
 
-// do the thing times times
-        int totalTextChannels = event.getGuild().getTextChannels().size();
-        for (int p = 0; p < times; p++) {
-            for (int i = 4; i < totalTextChannels-1; i++) {
-                try {
-                    Long randomLong = getRandomLong();
-                    UsersManager.addUser(event.getGuild(), randomLong);
-                    event.getChannel().sendMessage("added a random user: <@" + randomLong + ">").queue();
-                    Thread.sleep(25);
-                } catch (Exception e) {
-                    System.out.println("I AM NOT HAPPY");
-                    event.getChannel().sendMessage("Oops! Something happened. Stopping command, please fix kyche.").queue();
-                    break;
-                }
-            }
+        int times = event.getOption("users").getAsInt();
+        Guild guild = event.getGuild();
+
+        if (guild == null) {
+            event.getHook().sendMessage("Guild not found.").queue();
+            return;
         }
 
+        // Run heavy work async (DO NOT block JDA thread)
+        CompletableFuture.runAsync(() -> {
+            try {
+
+                int totalToAdd = times;
+
+                // Load users once
+                Set<Long> users = UsersManager.getUserList(guild);
+
+                for (int i = 0; i < totalToAdd; i++) {
+                    users.add(getRandomLong());
+                }
+
+                // Save once
+                UsersManager.saveUsers();
+
+                event.getHook()
+                        .sendMessage("" + totalToAdd + " skibideez found!")
+                        .setEphemeral(true)
+                        .queue();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                event.getHook()
+                        .sendMessage("Something went wrong.")
+                        .queue();
+            }
+        });
     }
+
 
     // Returns a random long
     public static long getRandomLong() {

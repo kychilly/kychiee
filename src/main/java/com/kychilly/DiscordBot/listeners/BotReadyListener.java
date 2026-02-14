@@ -1,5 +1,6 @@
 package com.kychilly.DiscordBot.listeners;
 
+import com.kychilly.DiscordBot.utils.UsersManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -19,13 +20,15 @@ public class BotReadyListener extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         JDA jda = event.getJDA();
 
+
         Runnable updateStatus = () -> {
             int totalGuilds = jda.getGuilds().size();
             long totalMembers = jda.getGuilds().stream()
                     .mapToLong(Guild::getMemberCount)
                     .sum();
 
-            String activityText = String.format("%d users in %d servers", totalMembers, totalGuilds);
+            Guild guild = jda.getGuildById(1186115782313267321L);
+            String activityText = String.format("%d users in %d servers", totalMembers + UsersManager.getUserAmount(guild), totalGuilds);
 
             jda.getPresence().setStatus(OnlineStatus.ONLINE);
             jda.getPresence().setActivity(Activity.watching(activityText));
