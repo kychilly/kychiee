@@ -42,28 +42,22 @@ public class TimeoutCommand {
                 : "No reason provided";
 
         try {
-            // Parse the duration
             Duration duration = parseDuration(timeInput);
             Instant timeoutUntil = Instant.now().plus(duration);
 
-            // Validate duration doesn't exceed Discord's 28-day limit
             if (duration.toDays() > 28) {
                 event.reply("❌ Maximum timeout duration is 28 days").setEphemeral(true).queue();
                 return;
             }
 
-            // Get the member and apply timeout
             event.getGuild().retrieveMember(user).queue(member -> {
-                // First apply the timeout
                 member.timeoutUntil(timeoutUntil).reason(reason).queue(
                         success -> {
-                            // Public response in the server
                             String publicResponse = "⏳ " + user.getAsMention() + " has been timed out for "
                                     + formatDuration(duration) + ".\n"
                                     + "Reason: " + reason;
                             event.reply(publicResponse).queue();
 
-                            // Try to send DM to the user
                             user.openPrivateChannel().queue(
                                     privateChannel -> {
                                         String dmMessage = "⚠️ **Timeout Notice** ⚠️\n\n"

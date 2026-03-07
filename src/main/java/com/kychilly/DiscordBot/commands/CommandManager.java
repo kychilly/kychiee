@@ -99,6 +99,8 @@ public class CommandManager extends ListenerAdapter {
             UsersCommand.execute(event);
         } else if (command.equals("showusers")) {
             UsersShowCommand.showUsers(event);
+        } else if (command.equals("simulatevalorantgame")) {
+            SimulateValorantGameCommand.execute(event);
         }
     }
 
@@ -120,6 +122,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(CoinflipCommand.getCommandData());
         commandData.add(UsersCommand.getCommandData());
         commandData.add(UsersShowCommand.getCommandData());
+        commandData.add(SimulateValorantGameCommand.getCommandData());
 
         //moderation commands
         commandData.add(BanCommand.getCommandData());
