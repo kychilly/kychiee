@@ -118,12 +118,92 @@ public class SimulateValorantGameCommand {
         String sentinel = randomWithoutDuplicate(sentinels, used);
         String flex = randomFlex(used);
 
-        return "**Duelist:** " + duelist + "\n" +
-                "**Initiator:** " + initiator + "\n" +
-                "**Controller:** " + controller + "\n" +
-                "**Sentinel:** " + sentinel + "\n" +
-                "**Flex:** " + flex;
+        return "**Duelist:** " + getAgentPicture(duelist) + "\n" +
+                "**Initiator:** " + getAgentPicture(initiator) + "\n" +
+                "**Controller:** " + getAgentPicture(controller) + "\n" +
+                "**Sentinel:** " + getAgentPicture(sentinel) + "\n" +
+                "**Flex:** " + getAgentPicture(flex);
     }
+
+
+    static String getAgentPicture(String agent) {
+        return agent;
+    } // bruh
+//    static String getAgentPicture(String agent) {
+//
+//        switch (agent.toLowerCase()) {
+//
+//            case "deadlock":
+//                return "<:deadlocked:1480257509162106210>";
+//
+//            case "chamber":
+//                return "<:chamber:1480257694305935410>";
+//
+//            case "sage":
+//                return "<:sage:1480257682658353193>";
+//
+//            case "killjoy":
+//                return "<:killjoy:1480257668284739846>";
+//
+//            case "cypher":
+//                return "<:cypher:1480257652505636994>";
+//
+//            case "clove":
+//                return "<:clove:1480257625167159598>";
+//
+//            case "viper":
+//                return "<:viper:1480257581135224922>";
+//
+//            case "omen":
+//                return "<:omen:1480257559819907312>";
+//
+//            case "brimstone":
+//            case "brim":
+//                return "<:brim:1480257547023212667>";
+//
+//            case "kayo":
+//            case "kay/o":
+//                return "<:kayo:1480257492622831739>";
+//
+//            case "gekko":
+//                return "<:gekko:1480257476198195272>";
+//
+//            case "breach":
+//                return "<:breach:1480257451535565628>";
+//
+//            case "fade":
+//                return "<:fade:1480257436331073659>";
+//
+//            case "skye":
+//                return "<:skye:1480257429102934168>";
+//
+//            case "sova":
+//                return "<:sova:1480257408719974722>";
+//
+//            case "iso":
+//                return "<:iso:1480257393545113631>";
+//
+//            case "phoenix":
+//                return "<:phoenix:1480257380567601016>";
+//
+//            case "yoru":
+//                return "<:yoru:1480257363736322130>";
+//
+//            case "neon":
+//                return "<:neon:1480257346686356468>";
+//
+//            case "raze":
+//                return "<:raze:1480257329460338759>";
+//
+//            case "reyna":
+//                return "<:reyna:1480257309415628916>";
+//
+//            case "jett":
+//                return "<:jett:1480257284237222071>";
+//        }
+//
+//        return "";
+//    }
 
     static String getMapThumbnail(String map) {
 
