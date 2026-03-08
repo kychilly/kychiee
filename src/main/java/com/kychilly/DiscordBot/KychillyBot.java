@@ -55,6 +55,7 @@ public class KychillyBot {
                 new Z_RepuestaChecker(),
                 new AIListener(),
                 //new Z_UserCount(),
+                new ValorantButtonListener(),
                 new MathListener()
         );
 

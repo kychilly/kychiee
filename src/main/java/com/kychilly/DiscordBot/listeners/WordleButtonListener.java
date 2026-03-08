@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class WordleButtonListener extends ListenerAdapter {
 
     public void onButtonInteraction(ButtonInteractionEvent event) {
+
         String buttonId = event.getComponentId();
 
         if (buttonId.startsWith("wordle:")) {
@@ -24,5 +25,7 @@ public class WordleButtonListener extends ListenerAdapter {
             }
         }
     }
+
+
 
 }
