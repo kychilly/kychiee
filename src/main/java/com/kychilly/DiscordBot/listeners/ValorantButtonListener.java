@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
+import java.awt.*;
+
 import static com.kychilly.DiscordBot.commands.SimulateValorantGameCommand.ran;
 
 public class ValorantButtonListener extends ListenerAdapter {
@@ -33,7 +35,7 @@ public class ValorantButtonListener extends ListenerAdapter {
         int cost;
         double playerChance;
 
-        switch(choice){
+        switch (choice){
             case "full":
                 cost = 4000;
                 playerChance = 0.67;
@@ -77,6 +79,24 @@ public class ValorantButtonListener extends ListenerAdapter {
 
         boolean playerWins = Math.random() < finalChance;
 
+        int teamASurvivors;
+        int teamBSurvivors;
+
+        if(playerWins){
+            teamASurvivors = (int)(Math.random() * 5) + 1; // 1-5 survive
+            teamBSurvivors = (int)(Math.random() * 2); // usually 0-1 survive when losing
+        }
+        else{
+            teamBSurvivors = (int)(Math.random() * 5) + 1;
+            teamASurvivors = (int)(Math.random() * 2);
+        }
+
+        int savedA = teamASurvivors * 500; // I dont like this at all, suspicious but ok
+        int savedB = teamBSurvivors * 500;
+
+        game.teamAMoney += savedA;
+        game.teamBMoney += savedB;
+
         if(playerWins){
             game.teamAScore++;
             game.teamAMoney += 3000;
@@ -88,11 +108,20 @@ public class ValorantButtonListener extends ListenerAdapter {
             game.teamAMoney += 1900;
         }
 
+        if (game.teamAMoney > 9000) { // caps money
+            game.teamAMoney = 9000;
+        }
+        if (game.teamBMoney > 9000) {
+            game.teamBMoney = 9000;
+        }
+
         game.round++;
 
         EmbedBuilder embed = new EmbedBuilder();
 
         embed.setTitle("Round Result");
+
+        embed = playerWins ? embed.setColor(Color.GREEN) : embed.setColor(Color.RED);
 
         embed.setThumbnail(getMapThumbnail(ran));
 
@@ -108,7 +137,11 @@ public class ValorantButtonListener extends ListenerAdapter {
 
                         (playerWins ? "**YOU WON THE ROUND!**" : "**Enemy won the round.**") +
 
-                        "\n\nScore: **" + game.teamAScore + "-" + game.teamBScore + "**\n" +
+                                "\n\nSurvivors:\n" +
+                                "Team A: **" + teamASurvivors + "/5**\n" +
+                                "Team B: **" + teamBSurvivors + "/5**\n\n" +
+
+                        "Score: **" + game.teamAScore + "-" + game.teamBScore + "**\n" +
                         "Your Money: **" + game.teamAMoney + "**\n" +
                         "Enemy Money: **" + game.teamBMoney + "**"
         );
@@ -132,7 +165,7 @@ public class ValorantButtonListener extends ListenerAdapter {
 
         event.editMessageEmbeds(embed.build())
                 .setActionRow(
-                        Button.primary("valorant_eco", "Eco (1000)"),
+                        Button.primary("valorant_eco", "Eco (800)"),
                         Button.secondary("valorant_half", "Half Buy (2500)"),
                         Button.danger("valorant_full", "Full Buy (4000)")
                 ).queue();
