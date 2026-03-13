@@ -56,6 +56,7 @@ public class KychillyBot {
                 new AIListener(),
                 //new Z_UserCount(),
                 new ValorantButtonListener(),
+                new TreeBotListener(),
                 new MathListener()
         );
 
